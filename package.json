@@ -33,7 +33,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "start:heroku": "npm install -g react-scripts && react-scripts start",
+    "start:heroku": "./node_modules/.bin/react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
