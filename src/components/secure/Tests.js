@@ -1,0 +1,103 @@
+import React from 'react';
+import { connect } from 'react-redux';
+// import { Link } from 'react-router';
+import Test from '../shared/Test'
+
+class Tests extends React.Component {
+    state = {
+      isFound: 'loading',
+      formValue: {}
+    }
+    componentWillMount() {
+      if (this.props.forms && this.props.forms[this.props.routeParams.id]) {
+        this.setState({
+          isFound: 'yes',
+          formValue: this.props.forms[this.props.routeParams.id]
+        })
+      }
+    }
+    componentWillReceiveProps(nextProps) {
+        if(nextProps.forms) {
+            if (nextProps.forms[this.props.routeParams.id]) {
+                this.setState({
+                  isFound: 'yes',
+                  formValue: nextProps.forms[this.props.routeParams.id]
+                })
+            } else {
+              this.setState({
+                isFound: 'no'
+              })
+            }
+        }
+    }
+	render() {
+    const {
+      isFound,
+      formValue
+    } = this.state;
+		return (
+        <div>
+          {isFound === 'loading' && <div id="loader"></div>}
+          {isFound === 'yes' && <div className="container">
+          <div className="row">
+              <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xs-offset-0 col-sm-offset-0 col-md-offset-0 col-lg-offset-0 toppad" >
+              {isFound === 'no' && <div className="well"> <h1> Test with specified ID was not found </h1> </div>}
+              <div className={formValue.completed === 1 ? 'panel panel-success' : 'panel panel-info'}>
+                  <div className="panel-heading">
+                  <h3 className="panel-title">{formValue.fullname}</h3>
+                  </div>
+                  <div className="panel-body">
+                  <div className="row">
+                      <div className=" col-md-12 col-lg-12 ">
+                      <table className="table table-user-information">
+                          <tbody>
+                          <tr>
+                              <td>ID:</td>
+                              <td>{formValue.id}</td>
+                          </tr>
+                          <tr>
+                              <td>Full Name:</td>
+                              <td>{formValue.fullname}</td>
+                          </tr>
+                          <tr>
+                              <td>Gender</td>
+                              <td>{formValue.gender}</td>
+                          </tr>
+                          <tr>
+                              <td>Age</td>
+                              <td>{formValue.age}</td>
+                          </tr>
+                          <tr>
+                              <td>Race</td>
+                              <td>{formValue.race}</td>
+                          </tr>
+                          <tr>
+                              <td>Weight</td>
+                              <td>{formValue.weight}</td>
+                          </tr>
+                          <tr>
+                              <td>Height</td>
+                              <td>{formValue.height}</td>
+                          </tr>
+                          <tr>
+                              <td>Side</td>
+                              <td>{formValue.side}</td>
+                          </tr>
+                          </tbody>
+                      </table>
+                      <Test formValue={formValue} />
+                      </div>
+                  </div>
+                  </div>
+              </div>
+              </div>
+          </div>
+          </div>}
+        </div>)
+	}
+}
+
+export default connect(state=>({
+    user: state.auth.user,
+    forms: state.form.forms
+}))(Tests);
