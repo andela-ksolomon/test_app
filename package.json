@@ -9,6 +9,10 @@
   },
   "author": "Solomon Kingsley",
   "license": "MIT",
+  "engines": {
+    "node": "6.10.0",
+    "npm": "5.3.0"
+  },
   "dependencies": {
     "babel-core": "^6.26.0",
     "bootstrap": "^3.3.4",

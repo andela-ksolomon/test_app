@@ -40,7 +40,7 @@ class Tests extends React.Component {
           {isFound === 'loading' && <div id="loader"></div>}
           {isFound === 'yes' && <div className="container">
           <div className="row">
-              <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xs-offset-0 col-sm-offset-0 col-md-offset-0 col-lg-offset-0 toppad" >
+              <div className="col-xs-10 col-sm-10 col-md-10 col-lg-10 col-xs-offset-0 col-sm-offset-0 col-md-offset-0 col-lg-offset-0 toppad" >
               {isFound === 'no' && <div className="well"> <h1> Test with specified ID was not found </h1> </div>}
               <div className={formValue.completed === 1 ? 'panel panel-success' : 'panel panel-info'}>
                   <div className="panel-heading">
