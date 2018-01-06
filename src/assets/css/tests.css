@@ -115,8 +115,8 @@ img {
   #pdf-logo {
       width: 200px;
       height: 200px;
-      background: url("https://upload.wikimedia.org/wikipedia/commons/a/ab/Logo_TV_2015.png");
-      background-size: cover;
+      /* background: url("/images/logo.png");
+      background-size: cover; */
   }
   .custab {
     border: 1px solid #ccc;

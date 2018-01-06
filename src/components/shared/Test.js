@@ -194,7 +194,7 @@ class Test extends React.Component {
                 formId={this.props.formValue.id}
                 resetValue={this.resetValue.bind(this)}
               />
-                <PdfPreviewer test={this.state.downloadTest} formValue={this.props.formValue} />
+                <PdfPreviewer profile={this.props.profile} test={this.state.downloadTest} formValue={this.props.formValue} />
             </div>
 		)
 	}

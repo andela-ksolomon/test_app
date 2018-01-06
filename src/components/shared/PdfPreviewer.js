@@ -103,14 +103,15 @@ class PdfPreviewer extends React.Component {
               <div className="pdf-content" id="pdf-content"> 
                 <div className="row">
                   <div id='pdf-logo' className="col-md-3 col-xs-12 col-sm-6 col-lg-3">
+                    <img src="/images/logo.png" alt="logo" />
                   </div>
                   <div className="col-md-9 col-xs-12 col-sm-6 col-lg-8" >
                     <div className="card pull-right">
-                      <p><strong>Name of Clinic: </strong> ABC Specialist</p>
-                      <p><strong>Tested By: </strong> Solomon Kingsley </p>
-                      <p><strong>Street Address: </strong> 123 block street </p>
-                      <p><strong>City: </strong> eadfsbfdhgsdzfd</p>
-                      <p><strong>State: </strong> eadfsbfdhgsdzfd</p>
+                      <p><strong>Name of Clinic: </strong> {this.props.profile.clinic}</p>
+                      <p><strong>Tested By: </strong> {this.props.profile.fullname} </p>
+                      <p><strong>Street Address: </strong> {this.props.profile.streetaddress} </p>
+                      <p><strong>City: </strong> {this.props.profile.city} </p>
+                      <p><strong>State: </strong> {this.props.profile.state} </p>
                     </div>
                   </div>
                 </div>
@@ -141,7 +142,7 @@ class PdfPreviewer extends React.Component {
                           <td></td>
                           <td>Time</td>
                           <td>{test.time}</td>
-                          <td>{accessTime(test.time, test.category)}</td>
+                          <td className="text-center">{accessTime(test.time, test.category)}</td>
                         </tr>
                       </table> : <table className="table table-striped custab">
                       <thead>

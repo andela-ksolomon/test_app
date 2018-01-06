@@ -5,12 +5,13 @@ import { connect } from 'react-redux';
 class Profile extends React.Component {
   state = {
     profile: {
-      hospitalId: '',
+      hospitalid: '',
       fullname: '',
       clinic: '',
       zip: '',
       email: '',
       city: '',
+      state: '',
       streetaddress: ''
     },
     successMessage: ''
@@ -77,9 +78,9 @@ class Profile extends React.Component {
                         <td>
                           <input
                             className="form-control"
-                            type="text" value={profile.hospitalId}
+                            type="text" value={profile.hospitalid}
                             placeholder="Hospital ID"
-                            onChange={this.onInputChange.bind(this, 'hospitalId')}
+                            onChange={this.onInputChange.bind(this, 'hospitalid')}
                           /></td>
                     </tr>
                     <tr>
@@ -130,6 +131,16 @@ class Profile extends React.Component {
                             type="text" value={profile.city}
                             placeholder="City"
                             onChange={this.onInputChange.bind(this, 'city')}                            
+                          /></td>
+                    </tr>
+                    <tr>
+                        <td>State</td>
+                        <td>
+                          <input
+                            className="form-control"
+                            type="text" value={profile.state}
+                            placeholder="State"
+                            onChange={this.onInputChange.bind(this, 'state')}                            
                           /></td>
                     </tr>
                     <tr>
