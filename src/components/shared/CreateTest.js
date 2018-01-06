@@ -15,7 +15,11 @@ class CreateTest extends React.Component {
     successMessage: '',
     selectedTest: '',
     selectedCategory: '',
-    allQuestions: {}
+    allQuestions: {},
+    videos: {
+      'L TEST': '//www.youtube.com/embed/gixqOS8qBNA?rel=0',
+      'TUG TEST': '//www.youtube.com/embed/VljdYRXMIE8?rel=0'
+    }
   }
   styles = {
 		row: {
@@ -29,8 +33,6 @@ class CreateTest extends React.Component {
   };
 
   componentWillReceiveProps (nextProps) {
-    console.log('PeqQuestions', PeqQuestions);
-    
     let tests;
     if (nextProps.selectedCategory && nextProps.tests) {
       if(nextProps.tests.hasOwnProperty(nextProps.selectedCategory)) {
@@ -39,7 +41,6 @@ class CreateTest extends React.Component {
     }
     if(tests) {
       const testData = tests[nextProps.selectedTest];
-      console.log('testData', testData);
       if (testData) {
         this.setState({
           title: testData.title,
@@ -246,6 +247,7 @@ class CreateTest extends React.Component {
                   <button type="submit" id="singlebutton" name="singlebutton" className="btn btn-success col-xs-12">Save</button>
               </div>
             </form>
+            {this.state.selectedCategory !== 'PEQ TEST' && <div>
             <div className="panel-group" id="accordion">
               <div className="panel panel-default">
                 <div className="panel-heading">
@@ -291,14 +293,14 @@ class CreateTest extends React.Component {
                     <span className="accordion_heading">Show Video</span>
                   </h6>
                 </div>
-                <div id="collapse2" className="panel-collapse collapse">
+                <div id="collapse2" className="panel-collapse collapse videopadding">
                   <div className="panel-body">
-                  <iframe width="100%" height="330" src="https://www.youtube.com/watch?v=gixqOS8qBNA" frameBorder="0" allowFullScreen>
-                  </iframe>
+                    <iframe id="video" width="720" height="350" src={this.state.videos[this.state.selectedCategory]} frameBorder="0" allowFullScreen></iframe>
                   </div>
                 </div>
               </div>
             </div>
+          </div>}
           </div>
         </div>
         </div>

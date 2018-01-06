@@ -30,6 +30,7 @@ import Home from './components/Home'
 import Logout from './components/auth/Logout'
 import Dashboard from './components/secure/Dashboard'
 import Tests from './components/secure/Tests'
+import Profile from './components/secure/Profile'
 import ViewRecords from './components/secure/ViewRecords'
 import CreateForm from './components/secure/CreateForm'
 
@@ -60,6 +61,7 @@ ReactDOM.render(
 				<Route path='logout' component={Logout}/>
 				<Route path='dashboard' component={Dashboard} onEnter={secure}/>
 				<Route path='test/:id' component={Tests} onEnter={secure}/>
+				<Route path='profile' component={Profile} onEnter={secure}/>
 				<Route path='viewrecords' component={ViewRecords} onEnter={secure}/>
 				<Route path='createform' component={CreateForm} onEnter={secure}/>
 			</Route>

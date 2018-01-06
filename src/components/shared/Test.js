@@ -82,7 +82,6 @@ class Test extends React.Component {
 
     finishTest (test) {
       const userId = firebase.auth().currentUser.uid;
-      let updates = {};
       firebase.database().ref(`/forms/${userId}/${this.props.formValue.id}/tests/${test.category}/${test.id}`).update({
         completed: 1
       }).then(() => {
@@ -112,7 +111,6 @@ class Test extends React.Component {
     }
 
     flattenData (data) {
-      console.log(data, 'data');
       let result = [];
       Object.keys(data).forEach((category) => {
         Object.keys(data[category]).forEach((test) => {
@@ -161,7 +159,6 @@ class Test extends React.Component {
                                 </li>
                             </ul>
                             {allTests && allTests.length > 0 ? <table id="mytable" className="table testTable table-bordred table-striped col-xs-12">
-
                               <thead>
                                 <th></th>
                                 <th>Title</th>

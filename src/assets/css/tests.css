@@ -115,15 +115,17 @@ img {
   #pdf-logo {
       width: 200px;
       height: 200px;
+      background: url("https://upload.wikimedia.org/wikipedia/commons/a/ab/Logo_TV_2015.png");
+      background-size: cover;
   }
-  .custab{
+  .custab {
     border: 1px solid #ccc;
     padding: 5px;
     margin: 5% 0;
     box-shadow: 3px 3px 2px #ccc;
     transition: 0.5s;
     }
-.custab:hover{
+.custab:hover {
     box-shadow: 3px 3px 0px transparent;
     transition: 0.5s;
     }
@@ -135,4 +137,7 @@ img {
 }
 #test-no {
     margin-left: 35px;
+}
+.videopadding {
+    padding-left: 150px;
 }

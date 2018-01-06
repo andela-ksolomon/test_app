@@ -18,9 +18,43 @@ class Register extends React.Component {
 		this.setState({
 			isLoading: true,
 			error: ''
-		})
-    firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.password)
-      .then(() => {
+    })
+    const {
+      email,
+      fullname,
+      hospitalid,
+      password
+    } = this.state;
+    firebase.auth().createUserWithEmailAndPassword(email, password)
+      .then((user) => {
+        const userId = user.uid;
+        const usersRef =  firebase.database().ref().child(`users/${userId}`);
+        if (userId) {
+          user.updateProfile({
+            displayName: fullname,
+          }).then(() => {
+            usersRef.set({
+              email,
+              fullname,
+              hospitalid,
+              password,
+            }, (error) => {
+              if (error) {
+                this.setState({
+                  isLoading: false,
+                  error: error.message
+                })
+              }
+            });
+          }, (error) => {
+            if (error) {
+              this.setState({
+                isLoading: false,
+                error: error.message
+              })
+            }
+          });
+        }
         this.setState({
           isLoading: false,
           error: ''

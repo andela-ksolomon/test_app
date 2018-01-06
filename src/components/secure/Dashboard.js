@@ -32,7 +32,6 @@ class Dashboard extends React.Component {
           allForms.push(nextProps.forms[id])
         })
         if (allForms.length > 0) {
-          console.log('allForms', allForms);
           this.setState({
             isFound: 'yes',
             forms: allForms
@@ -70,9 +69,11 @@ class Dashboard extends React.Component {
                             <div className="row">
                                 <div className="col-xs-6 text-left"><h4>Pending Form</h4></div>
                                 <div className="col-xs-3 col-xs-offset-3">
-                                <Link className="btn icon-btn btn-success" to="/createform">
-                                <span className="glyphicon btn-glyphicon glyphicon-plus img-circle text-success"></span>
-                                Create a New Form
+                                <Link to="/createform">
+                                  <button className="btn icon-btn btn-success">
+                                    <span className="glyphicon btn-glyphicon glyphicon-plus img-circle text-success"></span>
+                                    Create a New Form
+                                  </button>
                                 </Link>
                                 </div>
                             </div>
@@ -91,16 +92,6 @@ class Dashboard extends React.Component {
                         <div className="col-xs-3" id="marginTop">
                           No. of tests
                         </div>
-                        {/* <div className="col-xs-3">
-                        <Link className="btn icon-btn btn-success video" to={`/test/${form.id}`}>
-                            <span className="glyphicon btn-glyphicon glyphicon-save img-circle text-success"></span>
-                            Edit Form
-                            </Link>
-                        <a className="btn icon-btn btn-danger" href="#">
-                            <span className="glyphicon btn-glyphicon glyphicon-trash img-circle text-danger"></span>
-                            Delete
-                        </a>
-                        </div> */}
                       </div>
                         {pendingForm.map((form, i) => (
                           <li className="list-group-item" key={i}>

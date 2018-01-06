@@ -29,10 +29,6 @@ class ViewRecords extends React.Component {
     }
   }
 
-  componentWillReceiveProps (nextProps) {
-    console.log(nextProps);
-  }
-
   onDelete (form) {
     const getAlert = (form) => (
       <SweetAlert
@@ -55,7 +51,6 @@ class ViewRecords extends React.Component {
   }
 
   deleteForm (form) {
-    console.log(form, 'form');
     const userId = firebase.auth().currentUser.uid;
     firebase.database().ref(`/forms/${userId}/${form.id}`).remove();
      this.setState({
@@ -92,12 +87,21 @@ class ViewRecords extends React.Component {
       forms,
       isFound
     } = this.state;
+    const noofTests = (tests) => {
+      let sum = 0;
+      if(tests && Object.keys(tests).length > 0) {
+        Object.keys(tests).forEach((category) => {
+          sum += Object.keys(tests[category]).length;
+        })
+      }
+      return sum;
+    }
     const completedForm = forms.filter((form) => form.completed === 1);
 		return (
 			<div id="wrapper">
       {this.state.alert}
         {isFound === 'loading' && <div id="loader"></div>}
-			    <div className="records col-md-8">
+			    <div className="records col-md-9">
             <div className="panel panel-default list-group-panel">
                 <div className="panel-body">
                     <ul className="list-group list-group-header">
@@ -105,9 +109,11 @@ class ViewRecords extends React.Component {
                             <div className="row">
                                 <div className="col-xs-6 text-left"><h4>Completed Form</h4></div>
                                 <div className="col-xs-3 col-xs-offset-3">
-                                <Link className="btn icon-btn btn-success" href="/createform">
-                                <span className="glyphicon btn-glyphicon glyphicon-plus img-circle text-success"></span>
-                                Create a New Form
+                                <Link to="/createform">
+                                  <button className="btn icon-btn btn-success">
+                                    <span className="glyphicon btn-glyphicon glyphicon-plus img-circle text-success"></span>
+                                    Create a New Form
+                                  </button>
                                 </Link>
                                 </div>
                             </div>
@@ -116,25 +122,42 @@ class ViewRecords extends React.Component {
                     {isFound === 'no' && <div className="well"><h3> You don't any completed form yet!</h3></div>}
                     {isFound === 'yes' && completedForm.length === 0 && <div className="well"><h3> You don't any completed form yet!</h3></div>}
                     {forms && completedForm.length > 0 && <ul className="list-group list-group-body">
+                    <div className="row">
+                        <div className="col-xs-3 text-left" id="marginTop">
+                            Full name
+                        </div>
+                        <div className="col-xs-3" id="marginTop">
+                          Created date
+                        </div>
+                        <div className="col-xs-3" id="marginTop">
+                          No. of tests
+                        </div>
+                      </div>
                         {completedForm.map((form, i) => (
                           <li className="list-group-item" key={i}>
                             <div className="row" id="row">
-                                <div className="col-xs-6 text-left" id="marginTop">
+                                <div className="col-xs-3 text-left" id="marginTop">
                                   <a>
                                     <span className="glyphicon glyphicon-file" aria-hidden="true"></span>
                                     {form.fullname}
                                   </a>
                                   <p id="form_id">ID: {form.id}</p>
                                 </div>
-                                <div className="col-xs-4 col-xs-offset-2">
-                                <Link to={'/test/' + form.id} className="btn icon-btn btn-primary video">
-                                    <span className="glyphicon btn-glyphicon glyphicon-eye-open img-circle text-success"></span>
-                                    View Form
-                                    </Link>
-                                <a onClick={this.onDelete.bind(this, form)} className="btn icon-btn btn-danger">
-                                    <span className="glyphicon btn-glyphicon glyphicon-trash img-circle text-danger"></span>
-                                    Delete
-                                </a>
+                                <div className="col-xs-3" id="marginTop">
+                                  {form.date}
+                                </div>
+                                <div className="col-xs-3" id="marginTop">
+                                  <span id="test-no">{noofTests(form.tests)}</span>
+                                </div>
+                                <div className="col-xs-3">
+                                  <Link to={'/test/' + form.id} className="btn icon-btn btn-primary video">
+                                      <span className="glyphicon btn-glyphicon glyphicon-eye-open img-circle text-success"></span>
+                                      View Form
+                                      </Link>
+                                  <a onClick={this.onDelete.bind(this, form)} className="btn icon-btn btn-danger">
+                                      <span className="glyphicon btn-glyphicon glyphicon-trash img-circle text-danger"></span>
+                                      Delete
+                                  </a>
                                 </div>
                             </div>
                         </li>

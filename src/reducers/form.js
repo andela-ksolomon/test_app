@@ -1,9 +1,11 @@
 import {
-    FETCH_FORM
+    FETCH_FORM,
+    UPDATE_STATS
 } from '../actions/types';
 
 const initialState = {
-	forms: null
+	forms: null,
+	stats: null
 };
 
 export function form (state = initialState, action) {
@@ -11,6 +13,10 @@ export function form (state = initialState, action) {
         case FETCH_FORM:
           return Object.assign({}, state, {
             forms: {...action.forms}
+          });
+        case UPDATE_STATS:
+          return Object.assign({}, state, {
+            stats: {...action.stats}
           });
         default:
           return state

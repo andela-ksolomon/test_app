@@ -30,9 +30,8 @@
   margin-bottom: 7px;
 }
 
-.profile-usertitle-job {
-  text-transform: uppercase;
-  color: #5b9bd1;
+.profile-usertitle-email {
+  color: #1aa0ad;
   font-size: 12px;
   font-weight: 600;
   margin-bottom: 15px;
@@ -71,6 +70,14 @@
   color: #93a3b5;
   font-size: 14px;
   font-weight: 400;
+}
+.profile-usermenu ul li span {
+  color: #6f7276;
+  font-size: 15px;
+  font-weight: 400;
+  position: relative;
+  display: block;
+  padding: 10px 55px;
 }
 
 .profile-usermenu ul li a i {

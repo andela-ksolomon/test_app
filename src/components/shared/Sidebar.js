@@ -10,14 +10,29 @@ class Sidebar extends React.Component {
         </div>
         <div className="profile-usertitle">
           <div className="profile-usertitle-name">
-            Marcus Do
+            {this.props.user && this.props.user.displayName}
           </div>
-          <div className="profile-usertitle-job">
-            Developer
+          <div className="profile-usertitle-email">
+            {this.props.user && this.props.user.email}
           </div>
         </div>
         <div className="profile-userbuttons">
+          <Link to="/profile"><button type="button" className="btn btn-info btn-sm">My Profile</button></Link>
           <Link to="/logout"><button type="button" className="btn btn-danger btn-sm">Logout</button></Link>
+        </div>
+        <div className="profile-usermenu">
+        <ul className="nav">
+            <li>
+              <span>
+                No of Tests Created: {this.props.stats && this.props.stats.totalUserTests}
+              </span>
+            </li>
+            <li>
+              <span>
+                Total Tests: {this.props.stats && this.props.stats.totalTests}
+              </span>
+            </li>
+          </ul>
         </div>
         <div className="profile-usermenu">
           <ul className="nav">
@@ -36,11 +51,11 @@ class Sidebar extends React.Component {
               <i className="glyphicon glyphicon-ok"></i>
               View Completed Forms </Link>
             </li>
-            <li>
+            {/* <li>
               <Link activeClassName="active" to="#">
               <i className="glyphicon glyphicon-flag"></i>
               Help </Link>
-            </li>
+            </li> */}
           </ul>
         </div>
         </div>

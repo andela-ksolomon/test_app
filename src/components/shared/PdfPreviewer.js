@@ -4,8 +4,17 @@ import html2canvas from 'html2canvas';
 
 class PdfPreviewer extends React.Component {
   state = {
-    logo: "https://upload.wikimedia.org/wikipedia/commons/a/ab/Logo_TV_2015.png",
-    test: {}
+    test: {},
+    range: {
+      'L TEST': 12,
+      'TUG TEST': 15
+    }
+  }
+
+  componentDidMount() {
+    this.setState({
+      test: this.props.test
+    })
   }
 
   componentWillReceiveProps(nextProps) {
@@ -17,23 +26,19 @@ class PdfPreviewer extends React.Component {
   }
 
   printDocument() {
-    // var c = document.createElement('canvas');
-    // var ctx = c.getContext('2d');
-    // var img = document.getElementById('pdf-logo');
-    // ctx.drawImage(img, 10, 10);
-    // var base64String = c.toDataURL();
-    // this.setState({
-    //   logo: base64String
-    // })
+    const {
+      test
+    } = this.state;
     const input = document.getElementById('pdf-content');
     html2canvas(input)
       .then((canvas) => {
         const imgData = canvas.toDataURL('image/png');
+        /* eslint-disable-next-line */
         const pdf = new jsPDF("p", "mm", "a4");
         const width = pdf.internal.pageSize.width;    
         const height = pdf.internal.pageSize.height;
         pdf.addImage(imgData, 'JPEG', 0, 0, width, height);
-        pdf.save("download.pdf");
+        pdf.save(`${test.id}_${test.category}.pdf`);
       })
     ;
   }
@@ -65,7 +70,17 @@ class PdfPreviewer extends React.Component {
       let answeredQuestions = questions.filter(question => question.value);
       answeredQuestions.forEach(question => sum += question.value);
       return Math.ceil(sum/answeredQuestions.length)
+    }
 
+    const accessTime = (time, category) => {
+      if (time >= this.state.range[category]) {
+        return (
+          <span className="text-center text-success"> Test Passed </span>
+        )
+      }
+      return (
+        <span className="text-center text-danger"> Test Failed </span>
+      )
     }
     return (
       <div className="modal fade" id="pdfModal" tabIndex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -87,8 +102,7 @@ class PdfPreviewer extends React.Component {
               </div>
               <div className="pdf-content" id="pdf-content"> 
                 <div className="row">
-                  <div className="col-md-3 col-xs-12 col-sm-6 col-lg-3">
-                    <img alt="logo" src={this.state.logo} id="pdf-logo" className="img-responsive" />
+                  <div id='pdf-logo' className="col-md-3 col-xs-12 col-sm-6 col-lg-3">
                   </div>
                   <div className="col-md-9 col-xs-12 col-sm-6 col-lg-8" >
                     <div className="card pull-right">
@@ -126,8 +140,8 @@ class PdfPreviewer extends React.Component {
                         <tr>
                           <td></td>
                           <td>Time</td>
-                          <td>10</td>
-                          <td className="text-center text-success">Test Passed</td>
+                          <td>{test.time}</td>
+                          <td>{accessTime(test.time, test.category)}</td>
                         </tr>
                       </table> : <table className="table table-striped custab">
                       <thead>
