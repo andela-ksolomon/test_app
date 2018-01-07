@@ -43,10 +43,6 @@ class PdfPreviewer extends React.Component {
     ;
   }
 
-  averageScore(test) {
-    console.log('test', test);
-  }
-
   toDataURL(url, callback) {
     var xhr = new XMLHttpRequest();
     xhr.onload = function() {
@@ -129,6 +125,10 @@ class PdfPreviewer extends React.Component {
                 </div>
                 <div className="row">
                   <div className="card">
+                    <div className="card">
+                      <p><strong>Title: </strong> {test.title}</p>
+                      <p><strong>Category: </strong> {test.category}</p>
+                    </div>
                     {test.category !== 'PEQ TEST' ? <table className="table table-striped custab">
                       <thead>
                         <tr>

@@ -85,7 +85,7 @@ class Tests extends React.Component {
                           </tr>
                           </tbody>
                       </table>
-                      <Test formValue={formValue} profile={this.props.profile} />
+                      <Test questions={this.props.questions} formValue={formValue} profile={this.props.profile} />
                       </div>
                   </div>
                   </div>
@@ -100,5 +100,6 @@ class Tests extends React.Component {
 export default connect(state=>({
     user: state.auth.user,
     profile: state.auth.profile,
-    forms: state.form.forms
+    forms: state.form.forms,
+    questions: state.form.questions
 }))(Tests);

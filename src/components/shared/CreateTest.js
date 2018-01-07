@@ -2,7 +2,6 @@ import React from 'react';
 import firebase from 'firebase';
 import moment from 'moment';
 import QuizComponent from './QuizComponent';
-import PeqQuestions from './PeqQuestions';
 // import { connect } from 'react-redux';
 // import { Link } from 'react-router';
 
@@ -62,7 +61,7 @@ class CreateTest extends React.Component {
             selectedCategory: nextProps.selectedCategory,
             successMessage: '',
             selectedTest: nextProps.selectedTest,
-            allQuestions: PeqQuestions
+            allQuestions: Object.assign({}, nextProps.questions)
           })
         }
       }
@@ -75,7 +74,7 @@ class CreateTest extends React.Component {
         successMessage: '',
         selectedCategory: nextProps.selectedCategory,
         selectedTest: nextProps.selectedTest,
-        allQuestions: PeqQuestions
+        allQuestions: Object.assign({}, nextProps.questions)
       })
     }
   }

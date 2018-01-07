@@ -189,6 +189,7 @@ class Test extends React.Component {
                 </div>
               <CreateTest
                 tests={this.props.formValue.tests}
+                questions={this.props.questions}
                 selectedTest={this.state.selectedTest}
                 selectedCategory={this.state.selectedCategory}
                 formId={this.props.formValue.id}

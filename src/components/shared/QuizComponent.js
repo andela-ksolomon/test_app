@@ -1,6 +1,5 @@
 import React from 'react';
 import Slider from 'react-rangeslider'
-// import PeqQuestions from './PeqQuestions';
 
 class QuizComponent extends React.Component {
     state = {
@@ -74,6 +73,7 @@ class QuizComponent extends React.Component {
                                     labels={horizontalLabels}
                                     step={1}
                                     value={item.value}
+                                    tooltip={false}
                                     onChange={this.handleChange.bind(this, index, item.category)}
                                   />
                                 </div>

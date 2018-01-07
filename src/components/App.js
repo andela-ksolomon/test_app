@@ -4,13 +4,15 @@ import * as firebase from 'firebase';
 import { login, logout, resetNext, fetchUserProfile } from '../actions/auth';
 import {
     fetchForm,
-    updateStats
+		updateStats,
+		saveQuestions
 } from '../actions/form';
 import { push } from 'react-router-redux';
 
 //component
 import Sidebar from './shared/Sidebar';
 import Navbar from './shared/Navbar';
+import PeqQuestions from './shared/PeqQuestions';
 
 class App extends React.Component {
 	state = {
@@ -37,6 +39,7 @@ class App extends React.Component {
 	};
 
 	componentWillMount() {
+		localStorage.setItem('questions', JSON.stringify(PeqQuestions))
 		firebase.auth().onAuthStateChanged(user => {
 			if (user) {
 				this.setState({
@@ -53,13 +56,13 @@ class App extends React.Component {
           const allForms = snapshot.val();
           let totalTests = 0;
           let totalUserTests = 0
-          Object.keys(allForms).forEach((userForms) => {
-            Object.keys(allForms[userForms]).forEach((form) => {
-              if (allForms[userForms][form].tests) {
-                Object.keys(allForms[userForms][form].tests).forEach((category) => {
-                  Object.keys(allForms[userForms][form].tests).forEach((test) => {
-                    totalTests += 1;
-                    if(userForms === user.uid) {
+          Object.keys(allForms).forEach((userId) => {
+            Object.keys(allForms[userId]).forEach((formId) => {
+              if (allForms[userId][formId]['tests']) {
+                Object.keys(allForms[userId][formId]['tests']).forEach((category) => {
+                  Object.keys(allForms[userId][formId]['tests'][category]).forEach((test) => {
+										totalTests += 1;
+                    if(userId === user.uid) {
                       totalUserTests += 1;
                     }
                   })
@@ -69,6 +72,7 @@ class App extends React.Component {
           })
           this.props.updateStats(totalUserTests, totalTests);
 					this.props.fetchUserForm(allForms[user.uid]);
+					this.props.saveQuestions(JSON.parse(localStorage.getItem('questions')));
 				})
 			} else {
 				if (this.props.user) {
@@ -129,6 +133,9 @@ export default connect(state => ({
 	},
 	fetchUserForm: forms => {
     dispatch(fetchForm(forms));
+	},
+	saveQuestions: questions => {
+    dispatch(saveQuestions(questions));
   },
   updateStats: (totalUserTests, totalTests) => {
     dispatch(updateStats(totalUserTests, totalTests));
