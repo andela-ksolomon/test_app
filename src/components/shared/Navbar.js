@@ -20,7 +20,7 @@ class Navbar extends React.Component {
                     <span className="icon-bar"></span>
                   </button>
                 <a className="navbar-brand" href="">
-                  <img id="logo" src="/images/test.png" />
+                  <img alt="logo" id="logo" src="/images/test.png" />
                 </a>
                 </div>
               <div id="navbar" className="navbar-collapse collapse">

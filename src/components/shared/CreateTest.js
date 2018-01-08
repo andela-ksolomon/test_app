@@ -85,6 +85,15 @@ class CreateTest extends React.Component {
       error: ''
     })
     const {
+      selectedTest,
+      selectedCategory,
+      time,
+      comment,
+      title,
+      date,
+      allQuestions
+    } = this.state;
+    const {
       valid,
       error
     } = this.isValid();
@@ -92,27 +101,28 @@ class CreateTest extends React.Component {
     if(valid) {
       const userId = firebase.auth().currentUser.uid;
       let updates = {};
-      const testkey = this.state.selectedTest || firebase.database().ref()
+      const testkey = selectedTest || firebase.database().ref()
         .child(`forms/${userId}/${this.props.formId}/tests`).push().key
-      const postData = this.state.selectedCategory !== 'PEQ TEST' ? {
+      const postData = selectedCategory !== 'PEQ TEST' ? {
         id: testkey,
         formId: this.props.formId,
-        category: this.state.selectedCategory,
-        time: this.state.time,
-        comment: this.state.comment,
-        title: this.state.title,
-        date: this.state.date
+        category: selectedCategory,
+        time,
+        comment,
+        title,
+        date
       } : {
         id: testkey,
         formId: this.props.formId,
-        category: this.state.selectedCategory,
-        questions: this.state.allQuestions,
-        comment: this.state.comment,
-        title: this.state.title,
-        date: this.state.date
+        category: selectedCategory,
+        questions: allQuestions,
+        comment,
+        title,
+        date
       }
-      updates[`/forms/${userId}/${this.props.formId}/
-      tests/${this.state.selectedCategory}/${testkey}`] = postData;
+      const childNode = `${selectedCategory}/${testkey}`;
+      const node = `/forms/${userId}/${this.props.formId}/tests/${childNode}`;
+      updates[node] = postData;
       firebase.database().ref().update(updates)
       .then(() => {
         this.props.resetValue(testkey, this.state.selectedCategory);
