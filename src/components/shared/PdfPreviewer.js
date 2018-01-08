@@ -99,7 +99,7 @@ class PdfPreviewer extends React.Component {
               <div className="pdf-content" id="pdf-content"> 
                 <div className="row">
                   <div id='pdf-logo' className="col-md-3 col-xs-12 col-sm-6 col-lg-3">
-                    <img src="/images/logo.png" alt="logo" />
+                    <img src="/images/test.png" alt="logo" />
                   </div>
                   <div className="col-md-9 col-xs-12 col-sm-6 col-lg-8" >
                     <div className="card pull-right">
@@ -138,12 +138,14 @@ class PdfPreviewer extends React.Component {
                           <th className="text-center">Result</th>
                         </tr>
                       </thead>
+                      <tbody>
                         <tr>
                           <td></td>
                           <td>Time</td>
                           <td>{test.time}</td>
                           <td className="text-center">{accessTime(test.time, test.category)}</td>
                         </tr>
+                      </tbody>
                       </table> : <table className="table table-striped custab">
                       <thead>
                         <tr>

@@ -92,7 +92,8 @@ class CreateTest extends React.Component {
     if(valid) {
       const userId = firebase.auth().currentUser.uid;
       let updates = {};
-      const testkey = this.state.selectedTest || firebase.database().ref().child(`forms/${userId}/${this.props.formId}/tests`).push().key
+      const testkey = this.state.selectedTest || firebase.database().ref()
+        .child(`forms/${userId}/${this.props.formId}/tests`).push().key
       const postData = this.state.selectedCategory !== 'PEQ TEST' ? {
         id: testkey,
         formId: this.props.formId,
@@ -110,7 +111,8 @@ class CreateTest extends React.Component {
         title: this.state.title,
         date: this.state.date
       }
-      updates[`/forms/${userId}/${this.props.formId}/tests/${this.state.selectedCategory}/${testkey}`] = postData;
+      updates[`/forms/${userId}/${this.props.formId}/
+      tests/${this.state.selectedCategory}/${testkey}`] = postData;
       firebase.database().ref().update(updates)
       .then(() => {
         this.props.resetValue(testkey, this.state.selectedCategory);
@@ -148,11 +150,12 @@ class CreateTest extends React.Component {
     } = this.state;
     if(this.state.selectedCategory === 'PEQ TEST') {
       Object.keys(allQuestions).forEach((category) => {
-        const filteredQuestions =  allQuestions[category].filter(question => question.value)
-         valid = filteredQuestions.length > 0 ? true : false;
-         error = 'You must answer atleast one question from each section'
-         return;
-       })
+        const filteredQuestions =  allQuestions[category]
+          .filter(question => question.value)
+            valid = filteredQuestions.length > 0 ? true : false;
+            error = 'You must answer atleast one question from each section'
+            return;
+          })
        return {
         valid,
         error
@@ -181,17 +184,24 @@ class CreateTest extends React.Component {
 	render() {
     var errors = this.state.error ? <p> {this.state.error} </p> : '';
 		return (
-      <div className="modal fade" id="videoModal" tabIndex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div className="modal fade" id="videoModal" tabIndex="-1"
+        role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
       <div className="modal-dialog">
       <div className="modal-content">
         <div className="modal-body">
-        <button type="button" className="close btn btn-danger" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <button type="button" className="close btn btn-danger"
+          data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span></button>
         <div className="row">
-          <div className="col-sm-6 col-sm-offset-5"><h3 className="form-text text-muted">{this.state.title}</h3></div>
+          <div className="col-sm-6 col-sm-offset-5">
+            <h3 className="form-text text-muted">{this.state.title}</h3></div>
           <div className="col-md-10 col-sm-offset-1 well">
             <div className="form-group">
               {errors && <div className="alert alert-danger">{errors}</div>}
-              {this.state.successMessage && <div className="alert alert-success">{this.state.successMessage}</div>}
+              {this.state.successMessage &&
+              <div className="alert alert-success">
+                {this.state.successMessage}
+              </div>}
               <label htmlFor="exampleInputEmail1">Title</label>
               <input
                 id="exampleInputtitle1"
@@ -211,8 +221,10 @@ class CreateTest extends React.Component {
               <label htmlFor="date">Date:</label>
               <span>   {this.state.date}</span>
             </div>
-            {this.state.selectedCategory === 'PEQ TEST' && <QuizComponent allQuestions={this.state.allQuestions} />}
-            {this.state.selectedCategory !== 'PEQ TEST' && <table className="table table-bordered table-hover">
+            {this.state.selectedCategory === 'PEQ TEST' &&
+              <QuizComponent allQuestions={this.state.allQuestions} />}
+            {this.state.selectedCategory !== 'PEQ TEST' &&
+              <table className="table table-bordered table-hover">
               <thead>
                 <tr>
                   <th>Scale Name</th>
@@ -236,47 +248,65 @@ class CreateTest extends React.Component {
                 </tr>
               </tbody>
             </table>}
-            <form style={ this.styles.metric } className="form-horizontal" onSubmit={this.saveMetric.bind(this)}>
+            <form style={ this.styles.metric } className="form-horizontal"
+              onSubmit={this.saveMetric.bind(this)}>
 
               <div className="col-md-12 form-group">
-                <textarea className="form-control" placeholder="Write a Comment" id="textarea" onChange={this.onInputChange.bind(this, 'comment')} name="comment" value={this.state.comment} />
+                <textarea className="form-control" placeholder="Write a Comment"
+                  id="textarea"
+                  onChange={this.onInputChange.bind(this, 'comment')}
+                  name="comment" value={this.state.comment}
+                />
               </div>
-
               <div className="col-xs-3 col-xs-offset-1 form-group">
-                  <button type="submit" id="singlebutton" name="singlebutton" className="btn btn-success col-xs-12">Save</button>
+                  <button type="submit" id="singlebutton"
+                    name="singlebutton"
+                    className="btn btn-success col-xs-12">Save</button>
               </div>
             </form>
             {this.state.selectedCategory !== 'PEQ TEST' && <div>
             <div className="panel-group" id="accordion">
               <div className="panel panel-default">
                 <div className="panel-heading">
-                  <button data-toggle="collapse" data-parent="#accordion" href="#collapse1" className="btn btn-primary pull-left left-arrow">+</button>
-                  <h6 data-toggle="collapse" data-parent="#accordion" href="#collapse1" className="panel-title">
-                    <span className="accordion_heading">Show Instructions</span>
+                  <button data-toggle="collapse" data-parent="#accordion"
+                    href="#collapse1"
+                    className="btn btn-primary pull-left left-arrow">+</button>
+                  <h6 data-toggle="collapse" data-parent="#accordion"
+                    href="#collapse1" className="panel-title">
+                    <span className="accordion_heading">
+                      Show Instructions
+                    </span>
                   </h6>
                 </div>
                 <div id="collapse1" className="panel-collapse collapse">
                   <div className="panel-body">
-                    <div id="carousel-example-generic" className="carousel slide" data-interval="false" data-ride="carousel">
+                    <div id="carousel-example-generic"
+                      className="carousel slide"
+                      data-interval="false"
+                      data-ride="carousel">
                       <div className="carousel-inner">
                         <div className="item active">
                           <div className="row" style={ this.styles.row }>
-                            <p className="testimonial_para">1Lorem Ipsum ist ein einfacher Demo-Text für die Print- und Schriftindustrie. Lorem Ipsum ist in der Industrie bereits der Standard Demo-Text "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo en.</p><br />
+                            <p className="testimonial_para">
+                              1Lorem Ipsum ist ein einfacher Demo-Text </p><br />
                           </div>
                         </div>
                         <div className="item" style={ this.styles.row }>
                           <div className="row">
-                            <p className="testimonial_para">2Lorem Ipsum ist ein einfacher Demo-Text für die Print- und Schriftindustrie. Lorem Ipsum ist in der Industrie bereits der Standard Demo-Text "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo en.</p><br />
+                            <p className="testimonial_para">2Lorem Ipsum ist ein</p>
+                            <br />
                           </div>
                         </div>
                       </div>
                     </div>
                     <br />
                     <div className="col-sm-9 col-sm-offset-5">
-                      <a className="left fa fa-chevron-left btn btn-default testimonial_btn" href="#carousel-example-generic"
+                      <a className="left fa fa-chevron-left btn btn-default testimonial_btn"
+                        href="#carousel-example-generic"
                       data-slide="prev">
                       </a>
-                      <a className="right fa fa-chevron-right btn btn-default testimonial_btn" href="#carousel-example-generic"
+                      <a className="right fa fa-chevron-right btn btn-default testimonial_btn"
+                        href="#carousel-example-generic"
                       data-slide="next">
                       </a>
                     </div>
@@ -287,14 +317,20 @@ class CreateTest extends React.Component {
             <div className="panel-group" id="accordion">
               <div className="panel panel-default">
                 <div className="panel-heading">
-                  <button data-toggle="collapse" data-parent="#accordion" href="#collapse2" className="btn btn-primary pull-left left-arrow">+</button>
-                  <h6 data-toggle="collapse" data-parent="#accordion" href="#collapse2" className="panel-title">
+                  <button data-toggle="collapse" data-parent="#accordion"
+                    href="#collapse2"
+                    className="btn btn-primary pull-left left-arrow">+</button>
+                  <h6 data-toggle="collapse" data-parent="#accordion"
+                    href="#collapse2" className="panel-title">
                     <span className="accordion_heading">Show Video</span>
                   </h6>
                 </div>
-                <div id="collapse2" className="panel-collapse collapse videopadding">
+                <div id="collapse2"
+                  className="panel-collapse collapse videopadding">
                   <div className="panel-body">
-                    <iframe id="video" width="720" height="350" src={this.state.videos[this.state.selectedCategory]} frameBorder="0" allowFullScreen></iframe>
+                    <iframe id="video" width="720" height="350"
+                      src={this.state.videos[this.state.selectedCategory]}
+                      frameBorder="0" allowFullScreen></iframe>
                   </div>
                 </div>
               </div>

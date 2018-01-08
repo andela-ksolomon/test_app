@@ -38,8 +38,12 @@ class App extends React.Component {
 		}
 	};
 
-	componentWillMount() {
+	componentDidMount() {
 		localStorage.setItem('questions', JSON.stringify(PeqQuestions))
+		this.checkAuthentication();
+	}
+
+	checkAuthentication() {
 		firebase.auth().onAuthStateChanged(user => {
 			if (user) {
 				this.setState({

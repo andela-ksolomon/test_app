@@ -2,6 +2,7 @@ import React from 'react'
 import * as firebase from 'firebase';
 import { connect } from 'react-redux'
 import { Link } from 'react-router';
+import { push } from 'react-router-redux';
 
 import '../assets/css/home.css';
 
@@ -16,6 +17,12 @@ class Home extends React.Component {
 		password: '',
 		error: null
 	};
+
+	componentDidMount() {
+		if (firebase.auth().currentUser) {
+			this.props.onRedirect(this.props.next || '/dashboard');
+		}
+	}
 
 	handleSubmit(event) {
 		event.preventDefault();
@@ -67,4 +74,8 @@ class Home extends React.Component {
 	}
 }
 
-export default connect()(Home);
+export default connect(null, dispatch => ({
+	onRedirect: (path) => {
+		dispatch(push(path));
+	}
+}))(Home);

@@ -80,7 +80,8 @@ class Test extends React.Component {
       })
     }
 
-    finishTest (test) {
+    finishTest (test, event) {
+      event.preventDefault();
       const userId = firebase.auth().currentUser.uid;
       firebase.database().ref(`/forms/${userId}/${this.props.formValue.id}/tests/${test.category}/${test.id}`).update({
         completed: 1
@@ -160,14 +161,16 @@ class Test extends React.Component {
                             </ul>
                             {allTests && allTests.length > 0 ? <table id="mytable" className="table testTable table-bordred table-striped col-xs-12">
                               <thead>
-                                <th></th>
-                                <th>Title</th>
-                                <th></th>
-                                <th>Category</th>
-                                <th>Created Date</th>
-                                <th></th>
-                                <th></th>
-                                <th></th>
+                                <tr>
+                                  <th></th>
+                                  <th>Title</th>
+                                  <th></th>
+                                  <th>Category</th>
+                                  <th>Created Date</th>
+                                  <th></th>
+                                  <th></th>
+                                  <th></th>
+                                </tr>
                               </thead>
                               <tbody>
                               {allTests && allTests.map((test, i) => <tr key={i}>
@@ -178,7 +181,17 @@ class Test extends React.Component {
                                 <td>{moment(test['date'], "MMMM Do YYYY, h:mm:ss a").fromNow()}</td>
                                 {!test['completed'] && this.props.formValue.completed !== 1 && <td><p><button onClick={this.editTest.bind(this, test['id'], test['category'])} data-toggle="modal" data-target="#videoModal" className="btn icon-btn btn-info"><span className="glyphicon glyphicon-pencil"></span>  Edit</button></p></td>}
                                 <td><p><button onClick={this.onDelete.bind(this, test)} className="btn icon-btn btn-danger"><span className="glyphicon glyphicon-trash"></span>  Delete</button></p></td>
-                                {test['completed'] || this.props.formValue.completed === 1 ? <td><p><button onClick={this.downloadPdf.bind(this, test)} className="btn btn-default" data-toggle="modal" data-target="#pdfModal" ><span className="glyphicon glyphicon-download"></span>  Download PDF</button></p></td> : <td><p><button onClick={this.finishTest.bind(this, test)} className="btn icon-btn btn-success"><span className="glyphicon glyphicon-ok"></span>  Finish</button></p></td>}
+                                {test['completed'] ||
+                                this.props.formValue.completed === 1 ?
+                                <td>
+                                  <p>
+                                    <button onClick={this.downloadPdf.bind(this, test)}
+                                        className="btn btn-default" data-toggle="modal" data-target="#pdfModal" >
+                                      <span className="glyphicon glyphicon-download"></span>  Download PDF
+                                    </button>
+                                  </p>
+                                </td> :
+                                    <td><p><button onClick={this.finishTest.bind(this, test)} className="btn icon-btn btn-success"><span className="glyphicon glyphicon-ok"></span>  Finish</button></p></td>}
                               </tr>)}
                               </tbody>
                               </table> : <div className="well">

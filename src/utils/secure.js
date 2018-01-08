@@ -9,10 +9,8 @@ export function requireAuth(store) {
 		if (firebase.auth().currentUser === null) {
 			store.dispatch(setNext(nextState.location.pathname));
 			replace({
-				pathname: '/login',
+				pathname: '/',
 			})
 		}
 	}
 }
-
-

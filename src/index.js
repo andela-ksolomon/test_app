@@ -17,8 +17,6 @@ import './assets/css/tests.css'
 import 'react-rangeslider/lib/index.css'
 
 //libraries
-// import './assets/js/GridColumnCarousel.js'
-// utils
 import { requireAuth } from './utils/secure';
 import * as reducers from './reducers'
 
