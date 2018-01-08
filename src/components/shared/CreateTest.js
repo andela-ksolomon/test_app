@@ -161,7 +161,7 @@ class CreateTest extends React.Component {
     if(this.state.selectedCategory === 'PEQ TEST') {
       Object.keys(allQuestions).forEach((category) => {
         const filteredQuestions =  allQuestions[category]
-          .filter(question => question.value)
+          .filter(question => question.value || question.value === 0)
             valid = filteredQuestions.length > 0 ? true : false;
             error = 'You must answer atleast one question from each section'
             return;
@@ -190,7 +190,17 @@ class CreateTest extends React.Component {
 		var change = {};
 		change[name] = event.target.value;
 		this.setState(change);
-	}
+  }
+  handleChange (index, category, answer) {
+    const {
+      allQuestions
+    } = this.state;
+    allQuestions[category][index]['value'] = answer
+    this.setState({
+      allQuestions
+    })
+  }
+
 	render() {
     var errors = this.state.error ? <p> {this.state.error} </p> : '';
 		return (
@@ -232,7 +242,7 @@ class CreateTest extends React.Component {
               <span>   {this.state.date}</span>
             </div>
             {this.state.selectedCategory === 'PEQ TEST' &&
-              <QuizComponent allQuestions={this.state.allQuestions} />}
+              <QuizComponent allQuestions={this.state.allQuestions} handleChange={this.handleChange.bind(this)} />}
             {this.state.selectedCategory !== 'PEQ TEST' &&
               <table className="table table-bordered table-hover">
               <thead>

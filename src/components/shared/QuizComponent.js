@@ -26,16 +26,6 @@ class QuizComponent extends React.Component {
       })
   }
 
-    handleChange (index, category, answer) {
-      const {
-        allQuestions
-      } = this.state;
-      allQuestions[category][index]['value'] = answer
-      this.setState({
-        allQuestions
-      })
-    }
-
     render() {
       const horizontalLabels = {
         0: 'Extremly Bad',
@@ -74,7 +64,7 @@ class QuizComponent extends React.Component {
                                     step={1}
                                     value={item.value}
                                     tooltip={false}
-                                    onChange={this.handleChange.bind(this, index, item.category)}
+                                    onChange={(event) => this.props.handleChange(index, item.category, event)}
                                   />
                                 </div>
                                 <br />

@@ -60,10 +60,10 @@ class PdfPreviewer extends React.Component {
 
   render() {
     const { formValue, test } = this.props;
-    const totalQuestions = (questions => questions.filter(question => question.value).length);
+    const totalQuestions = (questions => questions.filter(question => question.value || question.value === 0).length);
     const averageScore = (questions) => {
       let sum = 0
-      let answeredQuestions = questions.filter(question => question.value);
+      let answeredQuestions = questions.filter(question => question.value || question.value === 0);
       answeredQuestions.forEach(question => sum += question.value);
       return Math.ceil(sum/answeredQuestions.length)
     }

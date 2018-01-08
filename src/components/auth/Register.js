@@ -11,8 +11,11 @@ class Register extends React.Component {
 		password: '',
     error: null,
     isLoading: false
-	};
-
+  };
+  
+  /*
+	* Handles Form Submission
+	*/
 	handleSubmit(event) {
 		event.preventDefault();
 		this.setState({
@@ -64,7 +67,9 @@ class Register extends React.Component {
 				this.setState({ error: error.message, isLoading: false });
 			});
 	}
-
+  /*
+	* Handles Form Inputs Change
+	*/
 	onInputChange(name, event) {
 		var change = {};
 		change[name] = event.target.value;

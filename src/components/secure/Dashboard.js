@@ -26,6 +26,7 @@ class Dashboard extends React.Component {
   }
   }
   componentWillReceiveProps(nextProps) {
+    // if form exist as a prop set value to app state
     if (nextProps.forms) {
         let allForms = [];
         Object.keys(nextProps.forms).forEach((id) => {

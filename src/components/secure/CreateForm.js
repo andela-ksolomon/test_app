@@ -20,7 +20,9 @@ class CreateForm extends React.Component {
     side: '',
     loading: false
   }
-
+  /*
+	* Handles Form Submission
+	*/
   handleSubmit(event) {
     this.setState({
       loading: true
@@ -52,14 +54,18 @@ class CreateForm extends React.Component {
       this.setState({ error: error.message });
     });
   }
-  
+  /*
+	* Validates Form before Submission
+	*/
   validateForm = (data) => {
     const newFormKey = firebase.database().ref().child('forms').push().key;
     return new Promise((resolve, reject) => {
       resolve(newFormKey);
     })
   }
-
+  /*
+	* Handles Input Changes
+	*/
 	onInputChange(name, event) {
     var change = {};
 		change[name] = event.target.value;
