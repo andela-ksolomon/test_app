@@ -65,7 +65,7 @@ class Tests extends React.Component {
                           </tr>
                           <tr>
                               <td>Age</td>
-                              <td>{formValue.age}</td>
+                              <td>{formValue.age} years</td>
                           </tr>
                           <tr>
                               <td>Race</td>
@@ -73,7 +73,7 @@ class Tests extends React.Component {
                           </tr>
                           <tr>
                               <td>Weight</td>
-                              <td>{formValue.weight}</td>
+                              <td>{formValue.weight} pounds</td>
                           </tr>
                           <tr>
                               <td>Height</td>

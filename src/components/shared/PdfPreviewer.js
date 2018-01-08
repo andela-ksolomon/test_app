@@ -33,7 +33,6 @@ class PdfPreviewer extends React.Component {
     html2canvas(input)
       .then((canvas) => {
         const imgData = canvas.toDataURL('image/png');
-        /* eslint-disable-next-line */
         const pdf = new jsPDF("p", "mm", "a4");
         const width = pdf.internal.pageSize.width;    
         const height = pdf.internal.pageSize.height;
@@ -69,7 +68,7 @@ class PdfPreviewer extends React.Component {
     }
 
     const accessTime = (time, category) => {
-      if (time >= this.state.range[category]) {
+      if (time <= this.state.range[category]) {
         return (
           <span className="text-center text-success"> Test Passed </span>
         )
@@ -105,9 +104,11 @@ class PdfPreviewer extends React.Component {
                     <div className="card pull-right">
                       <p><strong>Name of Clinic: </strong> {this.props.profile.clinic}</p>
                       <p><strong>Tested By: </strong> {this.props.profile.fullname} </p>
+                      <p><strong>Tested on: </strong> {test.date}</p>
                       <p><strong>Street Address: </strong> {this.props.profile.streetaddress} </p>
                       <p><strong>City: </strong> {this.props.profile.city} </p>
                       <p><strong>State: </strong> {this.props.profile.state} </p>
+                      <p><strong>Zip Code: </strong> {this.props.profile.zip} </p>
                     </div>
                   </div>
                 </div>
@@ -115,11 +116,14 @@ class PdfPreviewer extends React.Component {
                   <div className="col-md-12 col-xs-12 col-sm-6 col-lg-12" >
                     <div className="card">
                       <p><strong><u>Patient Information</u></strong></p>
+                      <p><strong>ID: </strong> {formValue.id}</p>
                       <p><strong>Full Name: </strong> {formValue.fullname}</p>
                       <p><strong>Gender: </strong> {formValue.gender}</p>
                       <p><strong>Age: </strong> {formValue.age}</p>
                       <p><strong>Race: </strong> {formValue.race}</p>
-                      <p><strong>Tested on: </strong> {test.date}</p>
+                      <p><strong>Weight: </strong> {formValue.weight}</p>
+                      <p><strong>Height: </strong> {formValue.height}</p>
+                      <p><strong>Side: </strong> {formValue.side}</p>
                     </div>
                   </div>
                 </div>

@@ -29,6 +29,25 @@ class ViewRecords extends React.Component {
     }
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.forms) {
+        let allForms = [];
+        Object.keys(nextProps.forms).forEach((id) => {
+          allForms.push(nextProps.forms[id])
+        })
+        if (allForms.length > 0) {
+          this.setState({
+            isFound: 'yes',
+            forms: allForms
+          })
+        } else {
+          this.setState({
+            isFound: 'no'
+          })
+        }
+    }
+  }
+
   onDelete (form) {
     const getAlert = (form) => (
       <SweetAlert
@@ -64,24 +83,6 @@ class ViewRecords extends React.Component {
     })
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.forms) {
-        let allForms = [];
-        Object.keys(nextProps.forms).forEach((id) => {
-          allForms.push(nextProps.forms[id])
-        })
-        if (allForms.length > 0) {
-          this.setState({
-            isFound: 'yes',
-            forms: allForms
-          })
-        } else {
-          this.setState({
-            isFound: 'no'
-          })
-        }
-    }
-  }
 	render() {
     const {
       forms,

@@ -1,11 +1,14 @@
 import React from 'react';
+import firebase from 'firebase'
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
+import SweetAlert from 'react-bootstrap-sweetalert';
 
 class Dashboard extends React.Component {
   state = {
     forms: [],
     isFound: 'loading',
+    alert: null
   }
   componentWillMount() {
     if (this.props.forms) {
@@ -44,6 +47,42 @@ class Dashboard extends React.Component {
         }
     }
   }
+
+  onDelete (form) {
+    const getAlert = (form) => (
+      <SweetAlert
+        warning
+        showCancel
+        confirmBtnText="Yes, delete it!"
+        confirmBtnBsStyle="danger"
+        cancelBtnBsStyle="default"
+        title="Are you sure?"
+        onConfirm={() => this.deleteForm(form)}
+        onCancel={() => this.onCancelDelete()}
+        >
+        You will not be able to recover this form!
+        </SweetAlert>
+    );
+
+    this.setState({
+      alert: getAlert(form)
+    });
+  }
+
+  deleteForm (form) {
+    const userId = firebase.auth().currentUser.uid;
+    firebase.database().ref(`/forms/${userId}/${form.id}`).remove();
+     this.setState({
+        alert: null
+      });
+  }
+
+  onCancelDelete () {
+    this.setState({
+      alert: null
+    })
+  }
+
 	render() {
     const {
       forms,
@@ -61,6 +100,7 @@ class Dashboard extends React.Component {
     const pendingForm = forms.filter((form) => form.completed === 0);
 		return (
 			<div id="wrapper">
+        {this.state.alert}
         {isFound === 'loading' && <div id="loader"></div>}
 			    <div className="records col-xs-9">
             <div className="panel panel-default list-group-panel">
@@ -115,7 +155,7 @@ class Dashboard extends React.Component {
                                     <span className="glyphicon btn-glyphicon glyphicon-save img-circle text-success"></span>
                                     Edit Form
                                     </Link>
-                                <a className="btn icon-btn btn-danger" href="#">
+                                <a className="btn icon-btn btn-danger" onClick={this.onDelete.bind(this, form)}>
                                     <span className="glyphicon btn-glyphicon glyphicon-trash img-circle text-danger"></span>
                                     Delete
                                 </a>

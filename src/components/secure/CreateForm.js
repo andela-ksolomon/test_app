@@ -18,7 +18,8 @@ class CreateForm extends React.Component {
     feet: '',
     inch: '',
     side: '',
-    loading: false
+    loading: false,
+    allRace: ['Caucasian', 'Mongoloid', 'Negroid', 'Australoid']
   }
   /*
 	* Handles Form Submission
@@ -53,6 +54,11 @@ class CreateForm extends React.Component {
     .catch((error) => {
       this.setState({ error: error.message });
     });
+  }
+  selectRace (race) {
+    this.setState({
+      race
+    })
   }
   /*
 	* Validates Form before Submission
@@ -151,39 +157,60 @@ class CreateForm extends React.Component {
                     </div>
                   </div>
                   <div className="row">
-                    <div className="col-sm-12 form-group">
+                    <div className="col-sm-12 input-group">
                       <label>Age</label>
-                      <input
-                        type="number"
-                        placeholder="Enter Age Here.."
-                        className="form-control"
-                        value={this.state.age}
-                        onChange={this.onInputChange.bind(this, 'age')}
-                      />
-                    </div>  
-                  </div>
-                  <div className="row">
-                      <div className="col-sm-4 form-group">
-                        <label>Race</label>
-                          <input
-                            type="text"
-                            placeholder="Enter Race Here.."
-                            className="form-control"
-                            value={this.state.race}
-                            onChange={this.onInputChange.bind(this, 'race')}
-                          />
-                      </div>  
-                      <div className="col-sm-4 form-group">
-                        <label>Weight</label>
+                      <div className="input-group">
                         <input
                           type="number"
-                          placeholder="Enter Weight Here.."
+                          placeholder="Enter Age Here.."
                           className="form-control"
-                          value={this.state.weight}
-                          onChange={this.onInputChange.bind(this, 'weight')}
+                          value={this.state.age}
+                          aria-describedby="age"
+                          onChange={this.onInputChange.bind(this, 'age')}
                         />
+                        <span
+                          className="input-group-addon"
+                          id="age">years</span>
                       </div>
-                      <div className="col-sm-4 form-group">
+                    </div>
+                  </div>
+                  <hr />
+                  <div className="row">
+                      <div className="col-sm-2 form-group">
+                        <label>Race</label>
+                        <div className="form-group form-group">
+                            <div className="form-group-btn">
+                                <button
+                                  type="button"
+                                  className="col-xs-12 btn btn-default text-left"
+                                  data-toggle="dropdown">
+                                    {this.state.race || 'Select a Race'}  <span className="caret"></span>
+                                </button>
+                                <ul className="dropdown-menu pull-right col-xs-12" role="menu">
+                                    {this.state.allRace.map((race, i) =>
+                                    <li key={i}>
+                                      <a onClick={this.selectRace.bind(this, race)}> {race} </a>
+                                    </li>)}
+                                </ul>
+                            </div>
+                            </div>
+                      </div>  
+                      <div className="col-sm-5 form-group">
+                        <label>Weight</label>
+                        <div className="col-sm-12 input-group">
+                          <input
+                            type="number"
+                            placeholder="Enter Weight Here.."
+                            className="form-control"
+                            value={this.state.weight}
+                            onChange={this.onInputChange.bind(this, 'weight')}
+                          />
+                          <span
+                            className="input-group-addon"
+                            id="age">pounds</span>
+                        </div>
+                      </div>
+                      <div className="col-sm-5 form-group">
                       <label>Height</label>
                       <div className="row">
                         <div className="col-md-6">
@@ -218,10 +245,10 @@ class CreateForm extends React.Component {
                               <input
                                 type="radio"
                                 name="side"
-                                value="1"
+                                value="Right"
                                 onChange={this.onInputChange.bind(this, 'side')}
-                                checked={this.state.side === '1'}
-                              />Side 1
+                                checked={this.state.side === 'Right'}
+                              />Right
                             </label>
                           </div>
                           <div className="radio">
@@ -229,10 +256,10 @@ class CreateForm extends React.Component {
                               <input
                                 type="radio"
                                 name="side"
-                                value="2"
+                                value="Left"
                                 onChange={this.onInputChange.bind(this, 'side')}
-                                checked={this.state.side === '2'}
-                              />Side 2
+                                checked={this.state.side === 'Left'}
+                              />Left
                             </label>
                           </div>
                           <div className="radio disabled">
@@ -240,10 +267,10 @@ class CreateForm extends React.Component {
                               <input
                                 type="radio"
                                 name="side"
-                                value="3"
+                                value="Both"
                                 onChange={this.onInputChange.bind(this, 'side')}
-                                checked={this.state.side === '3'}
-                              />Side 3
+                                checked={this.state.side === 'Both'}
+                              />Both
                             </label>
                           </div>
                       </div>
