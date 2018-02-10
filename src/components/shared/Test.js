@@ -4,11 +4,10 @@ import firebase from "firebase";
 import SweetAlert from "react-bootstrap-sweetalert";
 import CreateTest from "../shared/CreateTest";
 import PdfPreviewer from "./PdfPreviewer";
-import { Link } from "react-router";
 
 class Test extends React.Component {
   state = {
-    allTestCategory: ["TUG TEST", "L TEST", "PEQ TEST"],
+    allTestCategory: ["TUG TEST", "L TEST", "PEQ TEST", "4 STEP SQUARE TEST"],
     selectedTest: "",
     selectedCategory: "",
     successMessage: "",
@@ -86,7 +85,7 @@ class Test extends React.Component {
     firebase
       .database()
       .ref(
-        `/forms/${userId}/${this.props.formValue
+        `/forms/${userId}/${this.props.status}/${this.props.formValue
           .id}/tests/${test.category}/${test.id}`
       )
       .remove();
@@ -124,16 +123,21 @@ class Test extends React.Component {
     const userId = firebase.auth().currentUser.uid;
     firebase
       .database()
-      .ref(`/forms/${userId}/${this.props.formValue.id}`)
-      .update({
-        completed: 1
-      })
-      .then(() => {
-        this.setState({
-          successMessage: `This report has been marked as completed`,
-          alert: null
-        });
+      .ref(`/forms/${userId}/pendingform/${this.props.formValue.id}`)
+      .remove();
+    const newUpdates = this.props.formValue;
+    newUpdates.completed = 1;
+    const updateRef = firebase
+      .database()
+      .ref(`/forms/${userId}/completedform/`);
+    const completedKey = updateRef.push().key;
+    newUpdates.completedKey = completedKey;
+    updateRef.child(completedKey).update(newUpdates).then(() => {
+      this.setState({
+        successMessage: `This report has been marked as completed`,
+        alert: null
       });
+    });
   }
 
   resetValue(selectedTest, selectedCategory) {
@@ -176,7 +180,7 @@ class Test extends React.Component {
                 Finish Session
               </button>}
             {this.props.formValue.completed !== 1 &&
-              <div className="col-xs-12 pull-right">
+              <div className="pull-right">
                 <div className="input-group-btn">
                   <button
                     type="button"
@@ -214,6 +218,7 @@ class Test extends React.Component {
                     Outcome Test
                   </button>
                 </div>
+                <br />
               </div>}
             {allTests && allTests.length > 0
               ? <table className="table table-striped table-hover">
@@ -250,21 +255,21 @@ class Test extends React.Component {
                                 )}
                                 data-toggle="modal"
                                 data-target="#videoModal"
-                                className="btn-fill btn btn-info"
+                                className="btn-fill btn-sm btn btn-info"
                               >
-                                <span className="glyphicon btn-glyphicon glyphicon-pencil img-circle text-info" />{" "}
+                                <span className="glyphicon btn-glyphicon glyphicon-pencil img-circle text-info" />
                                 Edit
                               </button>}
                             <button
                               onClick={this.onDelete.bind(this, test)}
-                              className="btn-fill btn btn-danger"
+                              className="btn-fill btn-sm btn btn-danger"
                             >
                               <span className="glyphicon btn-glyphicon glyphicon-trash img-circle text-danger" />
                               Delete
                             </button>
                             <button
                               onClick={this.downloadPdf.bind(this, test)}
-                              className="btn-fill btn btn-info"
+                              className="btn-fill btn btn-sm btn-info"
                               data-toggle="modal"
                               data-target="#pdfModal"
                             >

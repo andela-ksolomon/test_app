@@ -11,10 +11,11 @@ class Dashboard extends React.Component {
     alert: null
   };
   componentWillMount() {
-    if (this.props.forms) {
+    const { pendingform } = this.props.forms || {};
+    if (pendingform) {
       let allForms = [];
-      Object.keys(this.props.forms).forEach(id => {
-        allForms.push(this.props.forms[id]);
+      Object.keys(pendingform).forEach(id => {
+        allForms.push(pendingform[id]);
       });
       if (allForms.length > 0) {
         this.setState({
@@ -26,14 +27,19 @@ class Dashboard extends React.Component {
           isFound: "no"
         });
       }
+    } else {
+      this.setState({
+        isFound: "no"
+      });
     }
   }
   componentWillReceiveProps(nextProps) {
     // if form exist as a prop set value to app state
-    if (nextProps.forms) {
+    const { pendingform } = nextProps.forms || {};
+    if (pendingform) {
       let allForms = [];
-      Object.keys(nextProps.forms).forEach(id => {
-        allForms.push(nextProps.forms[id]);
+      Object.keys(pendingform).forEach(id => {
+        allForms.push(pendingform[id]);
       });
       if (allForms.length > 0) {
         this.setState({
@@ -45,6 +51,10 @@ class Dashboard extends React.Component {
           isFound: "no"
         });
       }
+    } else {
+      this.setState({
+        isFound: "no"
+      });
     }
   }
 
@@ -70,7 +80,7 @@ class Dashboard extends React.Component {
 
   deleteForm(form) {
     const userId = firebase.auth().currentUser.uid;
-    firebase.database().ref(`/forms/${userId}/${form.id}`).remove();
+    firebase.database().ref(`/forms/${userId}/pendingform/${form.id}`).remove();
     this.setState({
       alert: null
     });
@@ -148,7 +158,7 @@ class Dashboard extends React.Component {
                           </span>
                         </td>
                         <td>
-                          <Link to={`/test/${form.id}`}>
+                          <Link to={`/test/pendingform/${form.id}`}>
                             <button className="col-xs-offset-1 btn-fill btn btn-info">
                               <span className="glyphicon btn-glyphicon glyphicon-eye-open img-circle text-info" />
                               Edit Report

@@ -126,15 +126,15 @@ class Profile extends React.Component {
                                 />
                               </td>
                             </tr>
-                            <button
-                              onClick={this.updateProfile.bind(this)}
-                              className="btn btn-fill btn-info"
-                            >
-                              <span className="glyphicon glyphicon-edit" />{" "}
-                              Update Profile
-                            </button>
                           </tbody>
                         </table>
+                        <button
+                          onClick={this.updateProfile.bind(this)}
+                          className="btn btn-fill btn-info"
+                        >
+                          <span className="glyphicon glyphicon-edit" /> Update
+                          Profile
+                        </button>
                       </div>
                     </div>
                   </div>

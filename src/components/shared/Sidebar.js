@@ -4,27 +4,26 @@ import { Link } from "react-router";
 class Sidebar extends React.Component {
   render() {
     return (
-      <div id="sidebar" className="sidebar"> {/*background color light bootstrap line 361*/}
+      <div id="sidebar" className="sidebar">
+        {" "}{/*background color light bootstrap line 361*/}
         <div className="sidebar-background" />
-          <div className="logo">
-            <img src="/images/aopaLOGO.png" alt="Logo" />
-          </div> 
+        <div className="logo">
+          <img src="/images/aopaLOGO.png" alt="Logo" />
+        </div>
         <div className="sidebar-wrapper">
           <h3 className="text-primary text-center">
-              Welcome {this.props.profile && this.props.profile.fullname}
+            Welcome {this.props.profile && this.props.profile.fullname}
           </h3>
-          <p className="text-muted text-center">
-            <h5>
-              My Monthly No. Test: {this.props.stats && this.props.stats.totalUserTests}
-            </h5>
-          </p>
-          <p className="text-muted text-center">
-            <h5>
-              Clinitians' No. Of Test Monthly: {this.props.stats && this.props.stats.totalTests}
-            </h5>
-          </p>
+          <h5 className="text-muted text-center">
+            My Monthly No. Test:{" "}
+            {this.props.stats && this.props.stats.totalUserTests}
+          </h5>
+          <h5 className="text-muted text-center">
+            Clinitians' No. Of Test Monthly:{" "}
+            {this.props.stats && this.props.stats.totalTests}
+          </h5>
           <ul className="nav">
-          <li className>
+            <li className>
               <Link
                 activeClassName="active"
                 className="nav-link"
@@ -73,8 +72,8 @@ class Sidebar extends React.Component {
             </li>
             <li role="presentation" className>
               <Link to="/logout" role="button">
-               <i className="glyphicon glyphicon-off" /> 
-               <p>Logout</p>
+                <i className="glyphicon glyphicon-off" />
+                <p>Logout</p>
               </Link>
             </li>
           </ul>

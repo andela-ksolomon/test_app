@@ -24,10 +24,12 @@ class ViewRecords extends React.Component {
     }
   };
   componentWillMount() {
-    if (this.props.forms) {
+    const { completedform } = this.props.forms || {};
+
+    if (completedform) {
       let allForms = [];
-      Object.keys(this.props.forms).forEach(id => {
-        allForms.push(this.props.forms[id]);
+      Object.keys(completedform).forEach(id => {
+        allForms.push(completedform[id]);
       });
       if (allForms.length > 0) {
         this.setState({
@@ -39,14 +41,19 @@ class ViewRecords extends React.Component {
           isFound: "no"
         });
       }
+    } else {
+      this.setState({
+        isFound: "no"
+      });
     }
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.forms) {
+    const { completedform } = nextProps.forms || {};
+    if (completedform) {
       let allForms = [];
-      Object.keys(nextProps.forms).forEach(id => {
-        allForms.push(nextProps.forms[id]);
+      Object.keys(completedform).forEach(id => {
+        allForms.push(completedform[id]);
       });
       if (allForms.length > 0) {
         this.setState({
@@ -58,6 +65,10 @@ class ViewRecords extends React.Component {
           isFound: "no"
         });
       }
+    } else {
+      this.setState({
+        isFound: "no"
+      });
     }
   }
 
@@ -82,7 +93,10 @@ class ViewRecords extends React.Component {
 
   deleteForm(form) {
     const userId = firebase.auth().currentUser.uid;
-    firebase.database().ref(`/forms/${userId}/${form.id}`).remove();
+    firebase
+      .database()
+      .ref(`/forms/${userId}/completedform/${form.id}`)
+      .remove();
     this.setState({
       alert: null
     });
@@ -131,15 +145,7 @@ class ViewRecords extends React.Component {
   }
 
   render() {
-    let {
-      forms,
-      isFound,
-      currentColumn,
-      allColumns,
-      id,
-      fullname,
-      date
-    } = this.state;
+    let { forms, isFound, id, fullname, date } = this.state;
     const noofTests = tests => {
       let sum = 0;
       if (tests && Object.keys(tests).length > 0) {
@@ -160,7 +166,7 @@ class ViewRecords extends React.Component {
             <div className="header">
               <h4 className="title">Completed Reports</h4>
               <p className="category">Lists of Reports that are completed</p>
-            {/*  <Link className="pull-right" to="/createform">
+              {/*  <Link className="pull-right" to="/createform">
                 <button className="col-xs-offset-1 btn-fill btn btn-success">
                   <span className="glyphicon btn-glyphicon glyphicon-plus img-circle text-success" />
                   Create a New Report
@@ -223,7 +229,7 @@ class ViewRecords extends React.Component {
                           </span>
                         </td>
                         <td>
-                          <Link to={`/test/${form.id}`}>
+                          <Link to={`/test/completedform/${form.completedKey}`}>
                             <button className="col-xs-offset-1 btn-fill btn btn-info">
                               <span className="glyphicon btn-glyphicon glyphicon-eye-open img-circle text-info" />
                               View Report

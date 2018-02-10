@@ -9,19 +9,25 @@ class Tests extends React.Component {
     formValue: {}
   };
   componentWillMount() {
-    if (this.props.forms && this.props.forms[this.props.routeParams.id]) {
+    const forms = this.props.forms
+      ? this.props.forms[this.props.params.status]
+      : null;
+    if (forms && forms[this.props.routeParams.id]) {
       this.setState({
         isFound: "yes",
-        formValue: this.props.forms[this.props.routeParams.id]
+        formValue: forms[this.props.routeParams.id]
       });
     }
   }
   componentWillReceiveProps(nextProps) {
-    if (nextProps.forms) {
-      if (nextProps.forms[this.props.routeParams.id]) {
+    const forms = nextProps.forms
+      ? nextProps.forms[nextProps.params.status]
+      : null;
+    if (forms) {
+      if (forms[this.props.routeParams.id]) {
         this.setState({
           isFound: "yes",
-          formValue: nextProps.forms[this.props.routeParams.id]
+          formValue: forms[this.props.routeParams.id]
         });
       } else {
         this.setState({
@@ -32,107 +38,84 @@ class Tests extends React.Component {
   }
   render() {
     const { isFound, formValue } = this.state;
+    const { status } = this.props.params;
     return (
       <div>
         <br />
         <br />
         {isFound === "loading" && <div id="loader" />}
         {isFound === "yes" &&
-          <div className="col-md-10 col-lg-10 col-xs-offset-0 col-sm-offset-0 col-md-offset-0 col-lg-offset-0 " >
+          <div className="col-md-12 col-lg-12 col-xs-offset-0 col-sm-offset-0 col-md-offset-0 col-lg-offset-0 ">
             <div className="container-fluid">
               <div className="row ">
                 <div className="col-md-4">
-                  <div className="card card-user" >
+                  <div className="card card-user">
                     <div className="header">
                       <h4 className="title">Patient Information</h4>
                       <p className="category" />
                     </div>
                     <div className="content">
                       <p className="description text-left">
-                        <h4>
-                          <small>
-                            Full Name: {formValue.fullname}
-                          </small>
-                        </h4>
+                        <small>
+                          Full Name: {formValue.fullname}
+                        </small>
                       </p>
-                      <hr />
                       <p className="description text-left">
-                        <h4>
-                          <small>
-                            Id: {formValue.id}
-                          </small>
-                        </h4>
+                        <small>
+                          Id: {formValue.id}
+                        </small>
                       </p>
-                      <hr />
                       <p className="description text-left">
-                        <h4>
-                          <small>
-                            Age: {formValue.age} Years
-                          </small>
-                        </h4>
+                        <small>
+                          Age: {formValue.age} Years
+                        </small>
                       </p>
-                      <hr />
                       <p className="description text-left">
-                        <h4>
-                          <small>
-                            Sex: {formValue.sex}
-                          </small>
-                        </h4>
+                        <small>
+                          Sex: {formValue.sex}
+                        </small>
                       </p>
-                      <hr />
                       <p className="description text-left">
-                        <h4>
-                          <small>
-                            Height: {formValue.height}
-                          </small>
-                        </h4>
+                        <small>
+                          Height: {formValue.height}
+                        </small>
                       </p>
-                      <hr />
                       <p className="description text-left">
-                        <h4>
-                          <small>
-                            Weight: {formValue.weight}
-                          </small>
-                        </h4>
+                        <small>
+                          Weight: {formValue.weight}
+                        </small>
                       </p>
-                      <hr />
                       <p className="description text-left">
-                        <h4>
-                          <small>
-                            Race: {formValue.race}
-                          </small>
-                        </h4>
+                        <small>
+                          Race: {formValue.race}
+                        </small>
                       </p>
-                      <hr />
                       <p className="description text-left">
-                        <h4>
-                          <small>
-                            Limb Loss Level: {formValue.limbLev}
-                          </small>
-                        </h4>
+                        <small>
+                          Limb Loss Level: {formValue.limbLev}
+                        </small>
                       </p>
-                      <hr />
                       <p className="description text-left">
-                        <h4>
-                          <small>
-                            Amputation Side: {formValue.ampSide}
-                          </small>
-                        </h4>
+                        <small>
+                          Amputation Side: {formValue.ampSide}
+                        </small>
                       </p>
-                      <hr />
                       <p className="description text-left">
-                        <h4>
-                          <small>
-                            Cause of limb loss: {formValue.limbLost}
-                          </small>
-                        </h4>
+                        <small>
+                          Cause of limb loss: {formValue.limbLost}
+                        </small>
                       </p>
-                      <hr />
+                      {status === "pendingform" &&
+                        <Link to={`/form/${formValue.id}`}>
+                          <button className="btn-fill btn-sm btn btn-primary">
+                            <span className="glyphicon btn-glyphicon glyphicon-pencil img-circle text-primary" />
+                            Edit Patient Information
+                          </button>
+                        </Link>}
                     </div>
-                    <hr />
                   </div>
                 </div>
-                <div className="col-md-8" >
+                <div className="col-md-8">
                   <div className="card">
                     <div className="header">
                       {/*<h4>Outcome Tests History</h4> */}
@@ -140,12 +123,17 @@ class Tests extends React.Component {
                     </div>
                     <div
                       className="content"
-                      style={{ maxHeight: 790, overflow: "scroll" }}
+                      style={{
+                        maxHeight: 790,
+                        minHeight: 300,
+                        overflow: "scroll"
+                      }}
                     >
                       <Test
                         questions={this.props.questions}
                         formValue={formValue}
                         profile={this.props.profile}
+                        status={this.props.params.status}
                       />
                       <div className="footer">
                         <div className="stats">

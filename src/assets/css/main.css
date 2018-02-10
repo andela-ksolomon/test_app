@@ -53,7 +53,7 @@ a {
 }
 
 .navbar-inverse {
- background-color: rgb(129, 218, 221); 
+  background-color: rgb(129, 218, 221);
   border-color: black;
 }
 .navbar-inverse .navbar-brand,
@@ -102,9 +102,9 @@ a {
 .modal-content {
   height: 100%;
 }
-.records {
+/* .records {
   margin: 20px;
-}
+} */
 #loader {
   position: absolute;
   left: 50%;
@@ -218,7 +218,6 @@ a {
   padding-left: 300px;
   font-size: 150%;
 }
-
 
 .navbar-brand > img {
   height: 100%;

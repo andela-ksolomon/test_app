@@ -1796,8 +1796,10 @@ body > .navbar-collapse[data-color="purple"]:after {
     border-radius: 50%;
     margin-right: 5px; }
   .card .description {
-    font-size: 14px;
-    color: #333; }
+      font-size: 18px;
+      border-bottom: 1px solid #a4a4a4;
+      padding: 7px;
+      color: #a2a2a2; }
   .card .footer {
     padding: 0;
     background-color: transparent;
@@ -1854,6 +1856,13 @@ body > .navbar-collapse[data-color="purple"]:after {
   /* text-align: center; */
   text-transform: none;
   /* margin-top: -70px; */
+}
+
+.show {
+  display: block;
+}
+.hide {
+  display: none;
 }
 
 .card-user .avatar {

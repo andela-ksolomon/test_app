@@ -13,7 +13,7 @@ export default class SortCaret extends Component {
   };
 
   render() {
-    let { order, column } = this.props;
+    let { order } = this.props;
     return (
       <a onClick={this.callSortFunc}>
         {order === "descend"

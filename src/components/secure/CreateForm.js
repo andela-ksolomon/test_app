@@ -19,6 +19,7 @@ class CreateForm extends React.Component {
     kLev: "",
     ampSide: "",
     limbLost: "",
+    isFound: "loading",
     loading: false,
     allRace: [
       "American Indian or Alaska Native",
@@ -29,11 +30,7 @@ class CreateForm extends React.Component {
       "Other"
     ],
     kLevel: ["Level 0", "Level 1", "Level 2", "Level 3", "Level 4"],
-    amputationSide: [
-      "Right side of body",
-      "Left side of body",
-      "Bilateral",
-    ],
+    amputationSide: ["Right side of body", "Left side of body", "Bilateral"],
     limbLoss: [
       "Cancer",
       "Congenital Condition",
@@ -54,10 +51,48 @@ class CreateForm extends React.Component {
     ],
     sexSelect: ["Male", "Female"]
   };
+
+  componentDidMount() {
+    const { pendingform } = this.props.forms || {};
+    console.log("this,props", this.props);
+    if (this.props.params.id) {
+      if (pendingform && pendingform[this.props.params.id]) {
+        this.setFormData(pendingform[this.props.params.id]);
+        this.setState({
+          isFound: "yes"
+        });
+      } else {
+        this.props.onRedirect(`/createform`);
+        this.props.onResetNext();
+      }
+    } else {
+      this.setState({
+        isFound: "yes"
+      });
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { pendingform } = nextProps.forms || {};
+    if (nextProps.params.id) {
+      if (pendingform && pendingform[nextProps.params.id]) {
+        this.setFormData(pendingform[nextProps.params.id]);
+        this.setState({
+          isFound: "yes"
+        });
+      }
+    } else {
+      this.setState({
+        isFound: "yes"
+      });
+    }
+  }
   /*
 	* Handles Form Submission
 	*/
   handleSubmit(event) {
+    const { params } = this.props;
+    const { pendingform } = this.props.forms || {};
     this.setState({
       loading: true
     });
@@ -77,9 +112,17 @@ class CreateForm extends React.Component {
       completed: 0,
       date: moment().add(1, "d").format("YYYY-M-D")
     };
+    if (
+      pendingform &&
+      (pendingform[postData.id].tests || pendingform[params.id].tests)
+    ) {
+      const tests =
+        pendingform[postData.id].tests || pendingform[params.id].tests;
+      postData.tests = tests;
+    }
     const userId = firebase.auth().currentUser.uid;
     let updates = {};
-    updates[`/forms/${userId}/${postData["id"]}`] = postData;
+    updates[`/forms/${userId}/pendingform/${postData["id"]}`] = postData;
     firebase
       .database()
       .ref()
@@ -90,7 +133,7 @@ class CreateForm extends React.Component {
             loading: false
           },
           () => {
-            this.props.onRedirect(`/test/${postData["id"]}`);
+            this.props.onRedirect(`/test/pendingform/${postData["id"]}`);
             this.props.onResetNext();
           }
         )
@@ -147,9 +190,46 @@ class CreateForm extends React.Component {
 	* Handles Input Changes
 	*/
   onInputChange(name, event) {
-    var change = {};
-    change[name] = event.target.value;
+    const { value } = event.target;
+    const { pendingform, completedform } = this.props.forms || {};
+    let change = {};
+    change[name] = value;
+    if (name === "id") {
+      if (pendingform && Object.keys(pendingform).includes(value)) {
+        const formData = pendingform[value];
+        this.setFormData(formData);
+      } else if (completedform) {
+        Object.keys(completedform).forEach(element => {
+          if (completedform[element].id === value) {
+            this.setFormData(completedform[element]);
+            return;
+          }
+        });
+      }
+    }
     this.setState(change);
+  }
+  setFormData(formData) {
+    this.setState({
+      id: formData.id,
+      fullname: formData.fullname,
+      sex: formData.sex,
+      age: formData.age,
+      race: formData.race,
+      limbLev: formData.limbLev,
+      limbLost: formData.limbLost,
+      kLev: formData.kLev,
+      ampSide: formData.ampSide,
+      weight: formData.weight,
+      feet: this.getFeet(formData.height),
+      inch: this.getInch(formData.height)
+    });
+  }
+  getFeet(height) {
+    return height.split("/")[0].replace("ft", "");
+  }
+  getInch(height) {
+    return height.split("/")[1].replace("inch", "");
   }
 
   render() {
@@ -164,7 +244,8 @@ class CreateForm extends React.Component {
       ampSide,
       weight,
       feet,
-      inch
+      inch,
+      isFound
     } = this.state;
     const isEnabled =
       id.length > 0 &&
@@ -180,304 +261,327 @@ class CreateForm extends React.Component {
       ampSide.length > 0;
     return (
       <div id="wrapper">
-        <div className="records col-xs-10">
-          <div className="container card">
-            <div className="header">
-              <h4 className="title">Patient Information</h4>
-            </div>
-            <div className="content">
-              <div className="row">
-                <form onSubmit={this.handleSubmit.bind(this)}>
-                  <div className="col-sm-12">
-                    <div className="row">
-                      <div className="col-sm-12 form-group">
-                        <label>Full Name</label>
-                        <input
-                          type="text"
-                          placeholder="Enter Full Name Here.."
-                          className="form-control"
-                          value={this.state.fullname}
-                          onChange={this.onInputChange.bind(this, "fullname")}
-                        />
-                      </div>
-                    </div>
+        {isFound === "loading"
+          ? <div id="loader" />
+          : <div className="records col-xs-10">
+              <div className="container card">
+                <div className="header">
+                  <h4 className="title">Patient Information</h4>
+                </div>
+                <div className="content">
+                  <div className="row">
+                    <form onSubmit={this.handleSubmit.bind(this)}>
+                      <div className="col-sm-12">
+                        <div className="row">
+                          <div className="col-sm-12 form-group">
+                            <label>Patient ID</label>
+                            <input
+                              type="text"
+                              placeholder="Enter ID Here.."
+                              className="form-control"
+                              value={this.state.id}
+                              onChange={this.onInputChange.bind(this, "id")}
+                            />
+                          </div>
+                        </div>
+                        <div className="row">
+                          <div className="col-sm-12 form-group">
+                            <label>Full Name</label>
+                            <input
+                              type="text"
+                              placeholder="Enter Full Name Here.."
+                              className="form-control"
+                              value={this.state.fullname}
+                              onChange={this.onInputChange.bind(
+                                this,
+                                "fullname"
+                              )}
+                            />
+                          </div>
+                        </div>
 
-                    <div className="row">
-                      <div className="col-sm-12 form-group">
-                        <label>Patient ID</label>
-                        <input
-                          type="text"
-                          placeholder="Enter ID Here.."
-                          className="form-control"
-                          value={this.state.id}
-                          onChange={this.onInputChange.bind(this, "id")}
-                        />
-                      </div>
-                    </div>
+                        <div className="row">
+                          <div className="col-sm-6 form-group">
+                            <label>Age</label>
+                            <input
+                              type="number"
+                              placeholder="Enter Age Here.."
+                              className="form-control"
+                              value={this.state.age}
+                              aria-describedby="age"
+                              onChange={this.onInputChange.bind(this, "age")}
+                            />
+                          </div>
+                          <div className="col-sm-6 form-group">
+                            <label>Weight</label>
+                            <input
+                              type="number"
+                              placeholder="Enter Weight Here.."
+                              className="form-control"
+                              value={this.state.weight}
+                              onChange={this.onInputChange.bind(this, "weight")}
+                            />
+                          </div>
+                        </div>
+                        <label>Height</label>
+                        <div className="row">
+                          <div className="col-md-6">
+                            <input
+                              type="number"
+                              placeholder="Feet.."
+                              className="form-control"
+                              value={this.state.feet}
+                              onChange={this.onInputChange.bind(this, "feet")}
+                            />
+                          </div>
+                          <div className="col-md-6">
+                            <input
+                              type="number"
+                              placeholder="Inch.."
+                              className="form-control"
+                              value={this.state.inch}
+                              onChange={this.onInputChange.bind(this, "inch")}
+                            />
+                          </div>
+                        </div>
+                        <br />
+                        <div className="row">
+                          <div className="col-sm-4 form-group">
+                            <label>Sex</label>
+                            <div className="form-group form-group">
+                              <div className="form-group-btn">
+                                <button
+                                  type="button"
+                                  className="col-xs-12 btn btn-default text-left"
+                                  data-toggle="dropdown"
+                                >
+                                  {this.state.sex || "Select a Sex"}
+                                  <span className="caret" />
+                                </button>
+                                <ul
+                                  className="dropdown-menu pull-right col-xs-12"
+                                  role="menu"
+                                >
+                                  {this.state.sexSelect.map((sex, i) =>
+                                    <li key={i}>
+                                      <a
+                                        onClick={this.selectSex.bind(this, sex)}
+                                      >
+                                        {sex}
+                                      </a>
+                                    </li>
+                                  )}
+                                </ul>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="col-sm-4 form-group">
+                            <label>Race</label>
+                            <div className="form-group form-group">
+                              <div className="form-group-btn">
+                                <button
+                                  type="button"
+                                  className="col-xs-12 btn btn-default text-left"
+                                  data-toggle="dropdown"
+                                >
+                                  {this.state.race || "Select a Race"}
+                                  <span className="caret" />
+                                </button>
+                                <ul
+                                  className="dropdown-menu pull-right col-xs-12"
+                                  role="menu"
+                                >
+                                  {this.state.allRace.map((race, i) =>
+                                    <li key={i}>
+                                      <a
+                                        onClick={this.selectRace.bind(
+                                          this,
+                                          race
+                                        )}
+                                      >
+                                        {race}
+                                      </a>
+                                    </li>
+                                  )}
+                                </ul>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="col-sm-4 form-group">
+                            <label>Limb Loss Level</label>
+                            <div className="form-group form-group">
+                              <div className="form-group-btn">
+                                <button
+                                  type="button"
+                                  className="col-xs-12 btn btn-default text-left"
+                                  data-toggle="dropdown"
+                                >
+                                  {this.state.limbLev ||
+                                    "Select limb loss level"}
+                                  <span className="caret" />
+                                </button>
+                                <ul
+                                  className="dropdown-menu pull-right col-xs-12"
+                                  role="menu"
+                                >
+                                  {this.state.limbLevel.map((limbLev, i) =>
+                                    <li key={i}>
+                                      <a
+                                        onClick={this.selectLimbLev.bind(
+                                          this,
+                                          limbLev
+                                        )}
+                                      >
+                                        {limbLev}
+                                      </a>
+                                    </li>
+                                  )}
+                                </ul>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="row">
+                          <div className="col-sm-4 form-group">
+                            <label>Amputation Side</label>
+                            <div className="form-group form-group">
+                              <div className="form-group-btn">
+                                <button
+                                  type="button"
+                                  className="col-xs-12 btn btn-default text-left"
+                                  data-toggle="dropdown"
+                                >
+                                  {this.state.ampSide ||
+                                    "Select amputation side"}
+                                  <span className="caret" />
+                                </button>
+                                <ul
+                                  className="dropdown-menu pull-right col-xs-12"
+                                  role="menu"
+                                >
+                                  {this.state.amputationSide.map((ampSide, i) =>
+                                    <li key={i}>
+                                      <a
+                                        onClick={this.selectAmpSide.bind(
+                                          this,
+                                          ampSide
+                                        )}
+                                      >
+                                        {ampSide}
+                                      </a>
+                                    </li>
+                                  )}
+                                </ul>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="col-sm-4 form-group">
+                            <label>Cause of limb loss</label>
+                            <div className="form-group form-group">
+                              <div className="form-group-btn">
+                                <button
+                                  type="button"
+                                  className="col-xs-12 btn btn-default text-left"
+                                  data-toggle="dropdown"
+                                >
+                                  {this.state.limbLost || "Select cause"}
+                                  <span className="caret" />
+                                </button>
+                                <ul
+                                  className="dropdown-menu pull-right col-xs-12"
+                                  role="menu"
+                                >
+                                  {this.state.limbLoss.map((limbLost, i) =>
+                                    <li key={i}>
+                                      <a
+                                        onClick={this.selectLimbLoss.bind(
+                                          this,
+                                          limbLost
+                                        )}
+                                      >
+                                        {limbLost}
+                                      </a>
+                                    </li>
+                                  )}
+                                </ul>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="col-sm-4 form-group">
+                            <label>K Level</label>
+                            <label
+                              data-toggle="tooltip"
+                              title="hello"
+                              id="hover"
+                            >
+                              More Info
+                            </label>
+                            <div className="form-group form-group">
+                              <div className="form-group-btn">
+                                <button
+                                  type="button"
+                                  className="col-xs-12 btn btn-default text-left"
+                                  data-toggle="dropdown"
+                                >
+                                  {this.state.kLev || "Select K Level"}
+                                  <span className="caret" />
+                                </button>
+                                <ul
+                                  className="dropdown-menu pull-right col-xs-12"
+                                  role="menu"
+                                >
+                                  {this.state.kLevel.map((kLev, i) =>
+                                    <li key={i}>
+                                      <a
+                                        onClick={this.selectKLevel.bind(
+                                          this,
+                                          kLev
+                                        )}
+                                      >
+                                        {kLev}
+                                      </a>
+                                    </li>
+                                  )}
+                                </ul>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <hr />
 
-                    <div className="row">
-                      <div className="col-sm-6 form-group">
-                        <label>Age</label>
-                          <input
-                            type="number"
-                            placeholder="Enter Age Here.."
-                            className="form-control"
-                            value={this.state.age}
-                            aria-describedby="age"
-                            onChange={this.onInputChange.bind(this, "age")}
-                          />
+                        {this.state.loading && <div className="loader" />}
+                        {!isEnabled &&
+                          <div className="col-xs-6 alert alert-danger">
+                            All fields are required
+                          </div>}
+                        <button
+                          disabled={!isEnabled}
+                          type="submit"
+                          className="btn btn btn-info pull-right"
+                        >
+                          Continue
+                        </button>
                       </div>
-                      <div className="col-sm-6 form-group">
-                        <label>Weight</label>
-                          <input
-                            type="number"
-                            placeholder="Enter Weight Here.."
-                            className="form-control"
-                            value={this.state.weight}
-                            onChange={this.onInputChange.bind(this, "weight")}
-                          />
-                      </div>
-                    </div>
-                    <label>Height</label>
-                    <div className="row">
-                      <div className="col-md-6">
-                        <input
-                          type="number"
-                          placeholder="Feet.."
-                          className="form-control"
-                          value={this.state.feet}
-                          onChange={this.onInputChange.bind(this, "feet")}
-                        />
-                      </div>
-                      <div className="col-md-6">
-                        <input
-                          type="number"
-                          placeholder="Inch.."
-                          className="form-control"
-                          value={this.state.inch}
-                          onChange={this.onInputChange.bind(this, "inch")}
-                        />
-                      </div>
-                    </div>
-                    <br />
-                    <div className="row">
-                      <div className="col-sm-4 form-group">
-                        <label>Sex</label>
-                        <div className="form-group form-group">
-                          <div className="form-group-btn">
-                            <button
-                              type="button"
-                              className="col-xs-12 btn btn-default text-left"
-                              data-toggle="dropdown"
-                            >
-                              {this.state.sex || "Select a Sex"}{" "}
-                              <span className="caret" />
-                            </button>
-                            <ul
-                              className="dropdown-menu pull-right col-xs-12"
-                              role="menu"
-                            >
-                              {this.state.sexSelect.map((sex, i) =>
-                                <li key={i}>
-                                  <a onClick={this.selectSex.bind(this, sex)}>
-                                    {" "}{sex}{" "}
-                                  </a>
-                                </li>
-                              )}
-                            </ul>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="col-sm-4 form-group">
-                        <label>Race</label>
-                        <div className="form-group form-group">
-                          <div className="form-group-btn">
-                            <button
-                              type="button"
-                              className="col-xs-12 btn btn-default text-left"
-                              data-toggle="dropdown"
-                            >
-                              {this.state.race || "Select a Race"}{" "}
-                              <span className="caret" />
-                            </button>
-                            <ul
-                              className="dropdown-menu pull-right col-xs-12"
-                              role="menu"
-                            >
-                              {this.state.allRace.map((race, i) =>
-                                <li key={i}>
-                                  <a onClick={this.selectRace.bind(this, race)}>
-                                    {" "}{race}{" "}
-                                  </a>
-                                </li>
-                              )}
-                            </ul>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="col-sm-4 form-group">
-                        <label>Limb Loss Level</label>
-                        <div className="form-group form-group">
-                          <div className="form-group-btn">
-                            <button
-                              type="button"
-                              className="col-xs-12 btn btn-default text-left"
-                              data-toggle="dropdown"
-                            >
-                              {this.state.limbLev ||
-                                "Select limb loss level"}{" "}
-                              <span className="caret" />
-                            </button>
-                            <ul
-                              className="dropdown-menu pull-right col-xs-12"
-                              role="menu"
-                            >
-                              {this.state.limbLevel.map((limbLev, i) =>
-                                <li key={i}>
-                                  <a
-                                    onClick={this.selectLimbLev.bind(
-                                      this,
-                                      limbLev
-                                    )}
-                                  >
-                                    {" "}{limbLev}{" "}
-                                  </a>
-                                </li>
-                              )}
-                            </ul>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="row">
-                      <div className="col-sm-4 form-group">
-                        <label>Amputation Side</label>
-                        <div className="form-group form-group">
-                          <div className="form-group-btn">
-                            <button
-                              type="button"
-                              className="col-xs-12 btn btn-default text-left"
-                              data-toggle="dropdown"
-                            >
-                              {this.state.ampSide ||
-                                "Select amputation side"}{" "}
-                              <span className="caret" />
-                            </button>
-                            <ul
-                              className="dropdown-menu pull-right col-xs-12"
-                              role="menu"
-                            >
-                              {this.state.amputationSide.map((ampSide, i) =>
-                                <li key={i}>
-                                  <a
-                                    onClick={this.selectAmpSide.bind(
-                                      this,
-                                      ampSide
-                                    )}
-                                  >
-                                    {" "}{ampSide}{" "}
-                                  </a>
-                                </li>
-                              )}
-                            </ul>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="col-sm-4 form-group">
-                        <label>Cause of limb loss</label>
-                        <div className="form-group form-group">
-                          <div className="form-group-btn">
-                            <button
-                              type="button"
-                              className="col-xs-12 btn btn-default text-left"
-                              data-toggle="dropdown"
-                            >
-                              {this.state.limbLost || "Select cause"}{" "}
-                              <span className="caret" />
-                            </button>
-                            <ul
-                              className="dropdown-menu pull-right col-xs-12"
-                              role="menu"
-                            >
-                              {this.state.limbLoss.map((limbLost, i) =>
-                                <li key={i}>
-                                  <a
-                                    onClick={this.selectLimbLoss.bind(
-                                      this,
-                                      limbLost
-                                    )}
-                                  >
-                                    {" "}{limbLost}{" "}
-                                  </a>
-                                </li>
-                              )}
-                            </ul>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="col-sm-4 form-group">
-                        <label>K Level</label>{" "}
-                        <label data-toggle="tooltip" title="hello" id="hover">
-                          More Info
-                        </label>
-                        <div className="form-group form-group">
-                          <div className="form-group-btn">
-                            <button
-                              type="button"
-                              className="col-xs-12 btn btn-default text-left"
-                              data-toggle="dropdown"
-                            >
-                              {this.state.kLev || "Select K Level"}{" "}
-                              <span className="caret" />
-                            </button>
-                            <ul
-                              className="dropdown-menu pull-right col-xs-12"
-                              role="menu"
-                            >
-                              {this.state.kLevel.map((kLev, i) =>
-                                <li key={i}>
-                                  <a
-                                    onClick={this.selectKLevel.bind(this, kLev)}
-                                  >
-                                    {" "}{kLev}{" "}
-                                  </a>
-                                </li>
-                              )}
-                            </ul>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <hr />
-
-                    {this.state.loading && <div className="loader" />}
-                    {!isEnabled &&
-                      <div className="col-xs-6 alert alert-danger">
-                        All fields are required
-                      </div>}
-                    <button
-                      disabled={!isEnabled}
-                      type="submit"
-                      className="btn btn btn-info pull-right"
-                    >
-                      Continue
-                    </button>
+                    </form>
                   </div>
-                </form>
+                </div>
               </div>
-            </div>
-          </div>
-        </div>
+            </div>}
       </div>
     );
   }
 }
 
-export default connect(null, dispatch => ({
-  onRedirect: path => {
-    dispatch(push(path));
-  },
-  onResetNext: () => {
-    dispatch(resetNext());
-  }
-}))(CreateForm);
+export default connect(
+  state => ({
+    forms: state.form.forms
+  }),
+  dispatch => ({
+    onRedirect: path => {
+      dispatch(push(path));
+    },
+    onResetNext: () => {
+      dispatch(resetNext());
+    }
+  })
+)(CreateForm);

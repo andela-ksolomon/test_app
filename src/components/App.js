@@ -7,11 +7,15 @@ import { push } from "react-router-redux";
 
 //component
 import Sidebar from "./shared/Sidebar";
-// import Navbar from "./shared/Navbar";
 import PeqQuestions from "./shared/PeqQuestions";
 import moment from "moment";
 
 class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.dbRef = firebase.database();
+    this.authRef = firebase.auth();
+  }
   state = {
     loaded: false,
     authenticated: false
@@ -40,71 +44,30 @@ class App extends React.Component {
     this.checkAuthentication();
   }
 
+  /**
+   * checkAuthentication - Checks if a user is authenticated
+   * @return {void}
+   * @memberof App
+   */
   checkAuthentication() {
-    firebase.auth().onAuthStateChanged(user => {
+    this.authRef.onAuthStateChanged(user => {
       if (user) {
         this.setState({
           authenticated: true
         });
-        firebase
-          .database()
-          .ref()
-          .child(`users/${user.uid}`)
-          .on("value", snapshot => {
-            this.props.fetchUserProfile(snapshot.val());
-          });
+        this.dbRef.ref().child(`users/${user.uid}`).on("value", snapshot => {
+          this.props.fetchUserProfile(snapshot.val());
+        });
         this.props.onLogin(user);
         this.props.onRedirect(this.props.next || "/dashboard");
         this.props.onResetNext();
-        firebase.database().ref("/forms").on("value", snapshot => {
-          const allForms = snapshot.val();
-          let totalTests = 0;
-          let totalUserTests = 0;
-          Object.keys(allForms).forEach(userId => {
-            Object.keys(allForms[userId]).forEach(formId => {
-              if (allForms[userId][formId]["tests"]) {
-                Object.keys(
-                  allForms[userId][formId]["tests"]
-                ).forEach(category => {
-                  Object.keys(
-                    allForms[userId][formId]["tests"][category]
-                  ).forEach(test => {
-                    let testdate =
-                      allForms[userId][formId]["tests"][category][test].date;
-                    let formattedDate = moment(testdate, "YYYY-M-D").format(
-                      "YYYY-M-D"
-                    );
-                    let startOfMonth = moment()
-                      .startOf("month")
-                      .format("YYYY-M-D");
-                    let endOfMonth = moment().endOf("month").format("YYYY-M-D");
-                    if (
-                      formattedDate > startOfMonth &&
-                      formattedDate < endOfMonth
-                    ) {
-                      if (userId === user.uid) {
-                        totalUserTests += 1;
-                      }
-                      totalTests += 1;
-                    }
-                  });
-                });
-              }
-            });
-          });
-          this.props.updateStats(totalUserTests, totalTests);
-          this.props.fetchUserForm(allForms[user.uid]);
-          this.props.saveQuestions(
-            JSON.parse(localStorage.getItem("questions"))
-          );
-        });
+        this.fetchForms(user);
       } else {
-        if (this.props.user) {
-          this.props.onRedirect("/");
-          this.props.onResetNext();
-        } else {
+        if (!this.props.user) {
           this.props.onLogout();
         }
+        this.props.onRedirect("/");
+        this.props.onResetNext();
         this.setState({
           authenticated: false
         });
@@ -115,12 +78,118 @@ class App extends React.Component {
     });
   }
 
+  /**
+   * fetchForms - Fetches all forms from database
+   * @param  {any} user 
+   * @return {void}
+   * @memberof App
+   */
+  fetchForms(user) {
+    this.dbRef.ref("/forms").on("value", snapshot => {
+      const questions = JSON.parse(localStorage.getItem("questions"));
+      const allUsersForms = snapshot.val();
+      if (allUsersForms) {
+        let userTests = this.getUserTests(
+          this.getAllUserForms(allUsersForms[user.uid])
+        );
+        let monthlyUserTests = this.getMonthlyUsersTests(userTests);
+        let averageTests = this.getAverageTests(allUsersForms);
+        this.props.updateStats(monthlyUserTests.length, averageTests);
+        this.props.fetchUserForm(allUsersForms[user.uid]);
+        this.props.saveQuestions(questions);
+      }
+    });
+  }
+
+  /**
+ * getAllUserForms - Gets all the forms created by a user
+ * @param  {any} forms 
+ * @return {array} allForms - Contains all the user Form
+ * @memberof App
+ */
+  getAllUserForms(forms) {
+    let allForms = {};
+    console.log("forms", forms);
+
+    for (let status in forms) {
+      if (forms.hasOwnProperty(status)) {
+        allForms = {
+          ...allForms,
+          ...forms[status]
+        };
+      }
+      return allForms;
+    }
+  }
+
+  /**
+ * getUserTests - Gets all tests for a particular user
+ * @param  {any} forms 
+ * @return 
+ * @memberof App
+ */
+  getUserTests(forms) {
+    const tests = [];
+    for (let patientId in forms) {
+      if (forms.hasOwnProperty(patientId)) {
+        const form = forms[patientId].tests;
+        for (let testCategory in form) {
+          if (form.hasOwnProperty(testCategory)) {
+            tests.push(form[testCategory]);
+          }
+        }
+      }
+    }
+    return tests;
+  }
+
+  /**
+ * getMonthlyUsersTests - Gets all tests for current month
+ * @param  {any} userTests 
+ * @return 
+ * @memberof App
+ */
+  getMonthlyUsersTests(userTests) {
+    let startDate = moment()
+      .startOf("month")
+      .subtract(1, "days")
+      .format("YYYY-MM-DD");
+    let endDate = moment().endOf("month").add(1, "days").format("YYYY-MM-DD");
+    let currentMonthTests = userTests.filter(tests => {
+      let test = Object.values(tests)[0];
+      return moment(test.date, "YYYY-M-D").isBetween(startDate, endDate);
+    });
+    return currentMonthTests;
+  }
+
+  /**
+ * getAverageTests - Gets the average number of
+ * created by all clinicians
+ * @param  {any} allUsersData 
+ * @return {number}
+ * @memberof App
+ */
+  getAverageTests(allUsersData) {
+    let sumOfTests = 0;
+    let sumOfClinicians = 0;
+    for (let userId in allUsersData) {
+      if (allUsersData.hasOwnProperty(userId)) {
+        sumOfClinicians++;
+        let userTest = this.getUserTests(
+          this.getAllUserForms(allUsersData[userId])
+        );
+        sumOfTests += userTest.length;
+      }
+    }
+    return Math.ceil(sumOfTests / sumOfClinicians);
+  }
+
   render() {
     const view1 = (
       <div className="wrapper" style={this.styles.app}>
         <Sidebar profile={this.props.profile} stats={this.props.stats} />
         <div className="main-panel" id="main-panel">
-         {/* <Navbar />  */}
+          {/* <Navbar />  */}
           {this.state.loaded ? this.props.children : <div id="loader" />}
         </div>
       </div>

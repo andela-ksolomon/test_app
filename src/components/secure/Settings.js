@@ -156,15 +156,15 @@ class Settings extends React.Component {
                                 />
                               </td>
                             </tr>
-                            <button
-                              onClick={this.updateSettings.bind(this)}
-                              className="btn btn-fill btn-info"
-                            >
-                              <span className="glyphicon glyphicon-edit" />{" "}
-                              Update Settings
-                            </button>
                           </tbody>
                         </table>
+                        <button
+                          onClick={this.updateSettings.bind(this)}
+                          className="btn btn-fill btn-info"
+                        >
+                          <span className="glyphicon glyphicon-edit" /> Update
+                          Settings
+                        </button>
                       </div>
                     </div>
                   </div>

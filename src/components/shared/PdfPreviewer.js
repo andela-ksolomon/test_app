@@ -1,13 +1,17 @@
 import React from "react";
-import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
+
+import jsPDF from "jspdf/dist/jspdf.min";
+
+// require('jspdf/dist/jspdf.debug');
 
 class PdfPreviewer extends React.Component {
   state = {
     test: {},
     range: {
       "L TEST": 12,
-      "TUG TEST": 15
+      "TUG TEST": 15,
+      "4 STEP SQUARE TEST": 17
     },
 
     references: {
@@ -19,6 +23,10 @@ class PdfPreviewer extends React.Component {
       "TUG TEST": {
         instructions: "https://www.cdc.gov/steadi/pdf/tug_test-a.pdf",
         video: "https://www.youtube.com/watch?v=VljdYRXMIE8"
+      },
+      "4 STEP SQUARE TEST": {
+        instructions: "https://www.cdc.gov/steadi/pdf/tug_test-a.pdf",
+        video: "https://www.youtube.com/watch?v=doaPhh3KJHM"
       },
       "PEQ TEST": {
         reference: "[1] PEQ Scale Averages",
@@ -51,14 +59,9 @@ class PdfPreviewer extends React.Component {
     html2canvas(input).then(canvas => {
       const imgData = canvas.toDataURL("image/png");
       const pdf = new jsPDF("p", "mm", "a5");
-      console.log(
-        "pdf.internal.pageSize.width",
-        pdf.internal.pageSize.width,
-        pdf.internal.pageSize.height
-      );
       const width = 100;
       const height = pdf.internal.pageSize.height;
-      pdf.addImage(imgData, "JPEG", 20, 10, width, height);
+      pdf.addImage(imgData, "PNG", 20, 10, width, height);
       pdf.save(`${test.id}_${test.category}.pdf`);
     });
   }
@@ -173,12 +176,12 @@ class PdfPreviewer extends React.Component {
               </div>
               <div className="pdf-content" id="pdf-content">
                 <div className="row">
-                {/*  <div
+                  <div
                     id="pdf-logo"
                     className="col-md-3 col-xs-12 col-sm-6 col-lg-3"
                   >
-                  
-                </div> */}
+                    <img src="/images/aopa.png" alt="logo" />
+                  </div>
                   <div className="col-md-9 col-xs-12 col-sm-6 col-lg-8">
                     <div className="card pull-right">
                       <p>
