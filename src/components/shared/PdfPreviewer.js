@@ -3,7 +3,7 @@ import html2canvas from "html2canvas";
 
 import jsPDF from "jspdf/dist/jspdf.min";
 
-// require('jspdf/dist/jspdf.debug');
+require("jspdf/dist/jspdf.debug");
 
 class PdfPreviewer extends React.Component {
   state = {
