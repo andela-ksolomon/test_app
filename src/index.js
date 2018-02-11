@@ -12,12 +12,12 @@ import {
 
 //css
 import jquery from "jquery";
-import jspdf from "jspdf";
-global.PNG = require("png-js");
+// import jspdf from "jspdf";
+// global.PNG = require("png-js");
 
 window.jQuery = jquery;
 window.$ = jquery;
-window.jsPDF = jspdf;
+// window.jsPDF = jspdf;
 
 import "./assets/css/bootstrap.min.css";
 import "./assets/css/pe-icon-7-stroke.css";
