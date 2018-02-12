@@ -94,7 +94,7 @@ class Register extends React.Component {
   render() {
     var errors = this.state.error
       ? <p>
-          {" "}{this.state.error}{" "}
+          {this.state.error}
         </p>
       : "";
     const { view } = this.props;

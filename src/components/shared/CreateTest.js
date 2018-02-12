@@ -4,6 +4,7 @@ import moment from "moment";
 import DayPickerInput from "react-day-picker/DayPickerInput";
 import "react-day-picker/lib/style.css";
 import QuizComponent from "./QuizComponent";
+import $ from 'jquery';
 // import { connect } from 'react-redux';
 // import { Link } from 'react-router';
 
@@ -95,7 +96,6 @@ class CreateTest extends React.Component {
         }
       }
     } else {
-      console.log(nextProps, "nextProps");
       this.setState({
         title: "",
         time: "",
@@ -166,6 +166,7 @@ class CreateTest extends React.Component {
         .update(updates)
         .then(() => {
           this.props.resetValue(testkey, this.state.selectedCategory);
+          $('#videoModal').scrollTop(0);
           this.setState(
             {
               successMessage: "Test was saved sucessfully"
@@ -180,11 +181,13 @@ class CreateTest extends React.Component {
         })
         .catch(error => {
           this.setState({ error: error.message });
+          $('#videoModal').scrollTop(0);
         });
     } else {
       this.setState({
         error
       });
+      $('#videoModal').scrollTop(0);
     }
   }
 
@@ -205,11 +208,6 @@ class CreateTest extends React.Component {
         const halfLength = Math.ceil(allQuestions[category].length / 2);
         const filteredQuestions = allQuestions[category].filter(
           question => question.value || question.value === 0
-        );
-        console.log(
-          "filterQuestions.length",
-          filteredQuestions.length,
-          halfLength
         );
         valid = filteredQuestions.length >= halfLength ? true : false;
         error =
@@ -251,7 +249,6 @@ class CreateTest extends React.Component {
   }
 
   onDayChange = day => {
-    console.log("day", moment(new Date("2018-2-1")).format("YYYY-M-D"));
     var change = {};
     change["date"] = moment(day).format("YYYY-M-D");
     this.setState(change);
@@ -260,7 +257,7 @@ class CreateTest extends React.Component {
   render() {
     var errors = this.state.error
       ? <p>
-          {" "}{this.state.error}{" "}
+          {this.state.error}
         </p>
       : "";
     return (
@@ -314,7 +311,7 @@ class CreateTest extends React.Component {
                     <div className="form-group">
                       <label htmlFor="category">Category:</label>
                       <span>
-                        {" "}{this.state.selectedCategory}
+                        {this.state.selectedCategory}
                       </span>
                     </div>
                     <div className="form-group">
@@ -398,7 +395,7 @@ class CreateTest extends React.Component {
                             href="#collapse1"
                           >
                             <div className="footer stats">
-                              <i className="glyphicon btn-glyphicon glyphicon-chevron-down img-circle text-info" />{" "}
+                              <i className="glyphicon btn-glyphicon glyphicon-chevron-down img-circle text-info" />
                               Show Instructions
                             </div>
                           </a>
@@ -423,7 +420,7 @@ class CreateTest extends React.Component {
                           href="#collapse2"
                         >
                           <div className="footer stats">
-                            <i className="glyphicon btn-glyphicon glyphicon-chevron-down img-circle text-info" />{" "}
+                            <i className="glyphicon btn-glyphicon glyphicon-chevron-down img-circle text-info" />
                             Show Video
                           </div>
                         </a>

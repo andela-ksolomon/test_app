@@ -128,7 +128,6 @@ class ViewRecords extends React.Component {
             ? aFullname > bFullname
             : aFullname < bFullname;
         case "date":
-          console.log("a[column]", moment(a[column], "YYYY-M-D"));
           return order !== "ascend"
             ? moment.utc(b[column]).diff(moment.utc(a[column]))
             : moment.utc(a[column]).diff(moment.utc(b[column]));

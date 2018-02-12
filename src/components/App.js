@@ -109,8 +109,6 @@ class App extends React.Component {
  */
   getAllUserForms(forms) {
     let allForms = {};
-    console.log("forms", forms);
-
     for (let status in forms) {
       if (forms.hasOwnProperty(status)) {
         allForms = {
@@ -118,8 +116,8 @@ class App extends React.Component {
           ...forms[status]
         };
       }
-      return allForms;
     }
+    return allForms;
   }
 
   /**

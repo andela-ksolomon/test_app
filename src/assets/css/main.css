@@ -127,11 +127,11 @@ a {
   border: 5px solid rgb(211, 210, 210);
   border-radius: 50%;
   border-top: 5px solid #3498db;
-  width: 40px;
-  height: 40px;
+  width: 35px;
+  height: 35px;
   z-index: 1;
   -webkit-animation: spin 1s linear infinite; /* Safari */
-  animation: spin 1s linear infinite;
+  animation: spin 0.6s linear infinite;
 }
 
 @-webkit-keyframes spin {

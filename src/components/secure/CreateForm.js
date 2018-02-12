@@ -54,7 +54,6 @@ class CreateForm extends React.Component {
 
   componentDidMount() {
     const { pendingform } = this.props.forms || {};
-    console.log("this,props", this.props);
     if (this.props.params.id) {
       if (pendingform && pendingform[this.props.params.id]) {
         this.setFormData(pendingform[this.props.params.id]);
@@ -114,6 +113,7 @@ class CreateForm extends React.Component {
     };
     if (
       pendingform &&
+      pendingform[postData.id] &&
       (pendingform[postData.id].tests || pendingform[params.id].tests)
     ) {
       const tests =

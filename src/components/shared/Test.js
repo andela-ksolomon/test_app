@@ -187,8 +187,7 @@ class Test extends React.Component {
                     className="btn btn-info"
                     data-toggle="dropdown"
                   >
-                    {this.state.selectedCategory ||
-                      "Select an Outcome Test"}{" "}
+                    {this.state.selectedCategory || "Select an Outcome Test"}
                     <span className="caret" />
                   </button>
                   <ul className="dropdown-menu pull-left" role="menu">
@@ -197,7 +196,7 @@ class Test extends React.Component {
                         <a
                           onClick={this.selectCategory.bind(this, testCategory)}
                         >
-                          {" "}{testCategory}{" "}
+                          {testCategory}
                         </a>
                       </li>
                     )}
@@ -273,7 +272,7 @@ class Test extends React.Component {
                               data-toggle="modal"
                               data-target="#pdfModal"
                             >
-                              <span className="glyphicon btn-glyphicon glyphicon-eye-open img-circle text-info" />{" "}
+                              <span className="glyphicon btn-glyphicon glyphicon-eye-open img-circle text-info" />
                               Preview
                             </button>
                           </td>

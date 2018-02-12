@@ -13,7 +13,7 @@ class PdfPreviewer extends React.Component {
       "TUG TEST": 15,
       "4 STEP SQUARE TEST": 17
     },
-
+    loading: "done",
     references: {
       "L TEST": {
         instructions:
@@ -56,13 +56,30 @@ class PdfPreviewer extends React.Component {
   printDocument() {
     const { test } = this.state;
     const input = document.getElementById("pdf-content");
-    html2canvas(input).then(canvas => {
-      const imgData = canvas.toDataURL("image/png");
+    this.setState({
+      loading: "loading"
+    });
+    this.generateCanvas(input).then(imgData => {
       const pdf = new jsPDF("p", "mm", "a5");
       const width = 100;
       const height = pdf.internal.pageSize.height;
       pdf.addImage(imgData, "PNG", 20, 10, width, height);
       pdf.save(`${test.id}_${test.category}.pdf`);
+      console.log("done");
+      this.setState({
+        loading: "done"
+      });
+    });
+  }
+
+  generateCanvas(input) {
+    return new Promise((resolve, reject) => {
+      html2canvas(input)
+        .then((canvas, i) => {
+          const imgData = canvas.toDataURL("image/png");
+          resolve(imgData);
+        })
+        .catch(error => reject(error));
     });
   }
 
@@ -84,23 +101,16 @@ class PdfPreviewer extends React.Component {
       if (time < this.state.range[category]) {
         return (
           <span className="text-center">
-            {" "}The patient is not at risk of falling.{" "}
+            The patient is not at risk of falling.
           </span>
         );
       }
       return (
-        <span className="text-center">
-          {" "}The patient is at risk of falling.{" "}
-        </span>
+        <span className="text-center">The patient is at risk of falling.</span>
       );
     };
 
     const references = category => {
-      console.log(
-        "this.state.references[category]",
-        this.state.references[category],
-        category
-      );
       let data = this.state.references[category];
       return (
         category &&
@@ -151,8 +161,10 @@ class PdfPreviewer extends React.Component {
             <div className="modal-body">
               <div className="row">
                 <div className="header">
-                  <p className="title">
-                    Download Reports PDF
+                  <div className="col-xs-7">
+                    <p className="title">Download Reports PDF</p>
+                  </div>
+                  <div className="col-xs-5">
                     <button
                       type="button"
                       className="btn btn-fill btn-sm btn-danger pull-right"
@@ -162,15 +174,17 @@ class PdfPreviewer extends React.Component {
                       <span className="glyphicon btn-glyphicon glyphicon-remove img-circle text-danger" />
                       Close
                     </button>
-                    <button
-                      onClick={this.printDocument.bind(this)}
-                      className="btn btn-fill btn-sm btn-success pull-right"
-                    >
-                      <span className="glyphicon btn-glyphicon glyphicon-download img-circle text-success" />
-                      Download PDF
-                    </button>
+                    {this.state.loading === "done"
+                      ? <button
+                          onClick={this.printDocument.bind(this)}
+                          className="btn btn-fill btn-sm btn-success pull-right"
+                        >
+                          <span className="glyphicon btn-glyphicon glyphicon-download img-circle text-success" />
+                          Download PDF
+                        </button>
+                      : <div className="loader" />}
                     <br />
-                  </p>
+                  </div>
                 </div>
                 <hr />
               </div>
@@ -188,24 +202,24 @@ class PdfPreviewer extends React.Component {
                         <strong>Clinic: </strong> {this.props.profile.clinic}
                       </p>
                       <p>
-                        <strong>Clinician: </strong>{" "}
-                        {this.props.profile.fullname}{" "}
+                        <strong>Clinician: </strong>
+                        {this.props.profile.fullname}
                       </p>
                       <p>
                         <strong>Tested on: </strong> {test.date}
                       </p>
                       <p>
-                        <strong>Street Address: </strong>{" "}
-                        {this.props.profile.streetaddress}{" "}
+                        <strong>Street Address: </strong>
+                        {this.props.profile.streetaddress}
                       </p>
                       <p>
-                        <strong>City: </strong> {this.props.profile.city}{" "}
+                        <strong>City: </strong> {this.props.profile.city}
                       </p>
                       <p>
-                        <strong>State: </strong> {this.props.profile.state}{" "}
+                        <strong>State: </strong> {this.props.profile.state}
                       </p>
                       <p>
-                        <strong>Zip Code: </strong> {this.props.profile.zip}{" "}
+                        <strong>Zip Code: </strong> {this.props.profile.zip}
                       </p>
                     </div>
                   </div>
@@ -249,7 +263,7 @@ class PdfPreviewer extends React.Component {
                         <strong>K Level: </strong> {formValue.kLev}
                       </p>
                       <p>
-                        <strong>Cause of Limb Loss: </strong>{" "}
+                        <strong>Cause of Limb Loss: </strong>
                         {formValue.limbLost}
                       </p>
                       <p>

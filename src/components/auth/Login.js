@@ -56,7 +56,7 @@ class Login extends React.Component {
     const { view } = this.props;
     var errors = this.state.error
       ? <p>
-          {" "}{this.state.error}{" "}
+          {this.state.error}
         </p>
       : "";
     return (

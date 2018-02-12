@@ -5,7 +5,7 @@ class Sidebar extends React.Component {
   render() {
     return (
       <div id="sidebar" className="sidebar">
-        {" "}{/*background color light bootstrap line 361*/}
+        {/*background color light bootstrap line 361*/}
         <div className="sidebar-background" />
         <div className="logo">
           <img src="/images/aopaLOGO.png" alt="Logo" />
@@ -15,11 +15,11 @@ class Sidebar extends React.Component {
             Welcome {this.props.profile && this.props.profile.fullname}
           </h3>
           <h5 className="text-muted text-center">
-            My Monthly No. Test:{" "}
+            My Monthly No. Test:
             {this.props.stats && this.props.stats.totalUserTests}
           </h5>
           <h5 className="text-muted text-center">
-            Clinitians' No. Of Test Monthly:{" "}
+            Clinitians' No. Of Test Monthly:
             {this.props.stats && this.props.stats.totalTests}
           </h5>
           <ul className="nav">
