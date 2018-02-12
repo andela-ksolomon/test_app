@@ -109,7 +109,7 @@ class CreateForm extends React.Component {
       weight: this.state.weight,
       height: `${this.state.feet}ft/${this.state.inch}inch`,
       completed: 0,
-      date: moment().add(1, "d").format("YYYY-M-D")
+      date: moment().format("YYYY-MM-DD")
     };
     if (
       pendingform &&

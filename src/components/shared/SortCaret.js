@@ -8,7 +8,7 @@ export default class SortCaret extends Component {
 
   callSortFunc = () => {
     let { column, order, sortFunction } = this.props;
-    let newOrder = order === "ascend" ? "descend" : "ascend";
+    let newOrder = order === "asc" ? "desc" : "asc";
     sortFunction(newOrder, column);
   };
 
@@ -16,7 +16,7 @@ export default class SortCaret extends Component {
     let { order } = this.props;
     return (
       <a onClick={this.callSortFunc}>
-        {order === "descend"
+        {order === "desc"
           ? <span className="caret" />
           : <span className="caret_down" />}
       </a>

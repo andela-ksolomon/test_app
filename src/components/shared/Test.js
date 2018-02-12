@@ -100,44 +100,26 @@ class Test extends React.Component {
     });
   }
 
-  finishTest(test, event) {
-    event.preventDefault();
-    const userId = firebase.auth().currentUser.uid;
-    firebase
-      .database()
-      .ref(
-        `/forms/${userId}/${this.props.formValue
-          .id}/tests/${test.category}/${test.id}`
-      )
-      .update({
-        completed: 1
-      })
-      .then(() => {
-        this.setState({
-          successMessage: "This test has been marked as completed."
-        });
-      });
-  }
-
   completeForm() {
     const userId = firebase.auth().currentUser.uid;
-    firebase
-      .database()
-      .ref(`/forms/${userId}/pendingform/${this.props.formValue.id}`)
-      .remove();
     const newUpdates = this.props.formValue;
     newUpdates.completed = 1;
     const updateRef = firebase
       .database()
       .ref(`/forms/${userId}/completedform/`);
-    const completedKey = updateRef.push().key;
+    const pushInstance = updateRef.push();
+    const completedKey = pushInstance.key;
     newUpdates.completedKey = completedKey;
-    updateRef.child(completedKey).update(newUpdates).then(() => {
+    pushInstance.set(newUpdates).then(() => {
       this.setState({
         successMessage: `This report has been marked as completed`,
         alert: null
       });
     });
+    firebase
+      .database()
+      .ref(`/forms/${userId}/pendingform/${this.props.formValue.id}`)
+      .remove();
   }
 
   resetValue(selectedTest, selectedCategory) {
@@ -242,7 +224,9 @@ class Test extends React.Component {
                             {test["category"]}
                           </td>
                           <td>
-                            {moment(test.date, "YYYY-M-D").format("YYYY-M-D")}
+                            {moment(test.date, "YYYY-MM-DD").format(
+                              "YYYY-MM-DD"
+                            )}
                           </td>
                           <td>
                             {this.props.formValue.completed !== 1 &&

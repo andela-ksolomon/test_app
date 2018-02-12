@@ -3,24 +3,18 @@ import { connect } from "react-redux";
 import moment from "moment";
 import firebase from "firebase";
 import SweetAlert from "react-bootstrap-sweetalert";
-import { Link } from "react-router";
-import SortCaret from "./SortCaret";
+
+import ReportsTable from "../shared/ReportsTable";
 
 class ViewRecords extends React.Component {
   state = {
     forms: [],
     isFound: "loading",
     alert: null,
-    allColumns: ["id", "fullname", "date"],
-    currentColumn: "",
-    id: {
-      order: "descend"
-    },
-    fullname: {
-      order: "ascend"
-    },
-    date: {
-      order: "ascend"
+    direction: {
+      id: "asc",
+      fullname: "asc",
+      date: "asc"
     }
   };
   componentWillMount() {
@@ -72,6 +66,12 @@ class ViewRecords extends React.Component {
     }
   }
 
+  /**
+   * onDelete - Displays dialog for confirmation
+   * 
+   * @param {any} form 
+   * @memberof ViewRecords
+   */
   onDelete(form) {
     const getAlert = form =>
       <SweetAlert
@@ -91,69 +91,88 @@ class ViewRecords extends React.Component {
     });
   }
 
+  /**
+   * deleteForm - Handles deleting a form
+   * 
+   * @param {any} form 
+   * @memberof ViewRecords
+   */
   deleteForm(form) {
     const userId = firebase.auth().currentUser.uid;
     firebase
       .database()
-      .ref(`/forms/${userId}/completedform/${form.id}`)
+      .ref(`/forms/${userId}/completedform/${form.completedKey}`)
       .remove();
     this.setState({
       alert: null
     });
   }
 
+  /**
+   * onCancelDelete - Gets called when form deletion is rejected
+   * 
+   * @memberof ViewRecords
+   */
   onCancelDelete() {
     this.setState({
       alert: null
     });
   }
 
-  selectColumn(column) {
-    this.setState({
-      currentColumn: column
-    });
-  }
-
+  /**
+   * sortFunction - Sorts Forms data based on order and column
+   * 
+   * @param {any} order 
+   * @param {any} column 
+   * @memberof ViewRecords
+   */
   sortFunction(order, column) {
     let forms = this.state.forms.sort((a, b) => {
       switch (column) {
         case "id":
-          return order !== "ascend"
-            ? parseInt(a[column], 10) > parseInt(b[column], 10)
-            : parseInt(a[column], 10) < parseInt(b[column], 10);
+          return order === "asc"
+            ? parseInt(b[column], 10) - parseInt(a[column], 10)
+            : parseInt(a[column], 10) - parseInt(b[column], 10);
         case "fullname":
           let aFullname = a[column].toUpperCase();
           let bFullname = b[column].toUpperCase();
-          return order !== "ascend"
-            ? aFullname > bFullname
-            : aFullname < bFullname;
+          if (order === "asc") {
+            if (aFullname < bFullname) {
+              return -1;
+            }
+            if (aFullname > bFullname) {
+              return 1;
+            }
+            return 0;
+          }
+          if (order === "desc") {
+            if (bFullname < aFullname) {
+              return -1;
+            }
+            if (bFullname > aFullname) {
+              return 1;
+            }
+            return 0;
+          }
+          return 0;
         case "date":
-          return order !== "ascend"
-            ? moment.utc(b[column]).diff(moment.utc(a[column]))
-            : moment.utc(a[column]).diff(moment.utc(b[column]));
+          return order === "asc"
+            ? moment(b[column], "YYYY-MM-DD").utc().diff(moment.utc(a[column]))
+            : moment(a[column], "YYYY-MM-DD").utc().diff(moment.utc(b[column]));
         default:
           return a[column] < b[column];
       }
     });
     this.setState({
       forms,
-      [column]: {
-        order: order
+      direction: {
+        [column]: order
       }
     });
   }
 
   render() {
-    let { forms, isFound, id, fullname, date } = this.state;
-    const noofTests = tests => {
-      let sum = 0;
-      if (tests && Object.keys(tests).length > 0) {
-        Object.keys(tests).forEach(category => {
-          sum += Object.keys(tests[category]).length;
-        });
-      }
-      return sum;
-    };
+    let { forms, isFound, direction } = this.state;
     const completedForm = forms.filter(form => form.completed === 1);
     return (
       <div id="wrapper">
@@ -173,85 +192,13 @@ class ViewRecords extends React.Component {
               </Link> 
             */}
             </div>
-            <div className="content table-full-width table-responsive">
-              {forms &&
-                completedForm.length > 0 &&
-                <table className="table table-striped table-hover">
-                  <thead>
-                    <tr>
-                      <th>
-                        ID
-                        <SortCaret
-                          order={id.order}
-                          column="id"
-                          sortFunction={this.sortFunction.bind(this)}
-                        />
-                        <a />
-                      </th>
-                      <th>
-                        Patient
-                        <SortCaret
-                          order={fullname.order}
-                          column="fullname"
-                          sortFunction={this.sortFunction.bind(this)}
-                        />
-                      </th>
-                      <th>
-                        Created Date
-                        <SortCaret
-                          order={date.order}
-                          column="date"
-                          sortFunction={this.sortFunction.bind(this)}
-                        />
-                      </th>
-                      <th>No. of Tests</th>
-                      <th>
-                        <span id="action_text">Actions</span>
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {completedForm.map((form, i) =>
-                      <tr key={i}>
-                        <td>
-                          {form.id}
-                        </td>
-                        <td>
-                          {form.fullname}
-                        </td>
-                        <td>
-                          {form.date}
-                        </td>
-                        <td>
-                          <span id="test-no">
-                            {noofTests(form.tests)}
-                          </span>
-                        </td>
-                        <td>
-                          <Link to={`/test/completedform/${form.completedKey}`}>
-                            <button className="col-xs-offset-1 btn-fill btn btn-info">
-                              <span className="glyphicon btn-glyphicon glyphicon-eye-open img-circle text-info" />
-                              View Report
-                            </button>
-                          </Link>
-                          <button
-                            onClick={this.onDelete.bind(this, form)}
-                            className="btn-fill btn btn-danger"
-                          >
-                            <span className="glyphicon btn-glyphicon glyphicon-trash img-circle text-danger" />
-                            Delete Report
-                          </button>
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>}
-              <div className="footer">
-                <div className="stats">
-                  <i />
-                </div>
-              </div>
-            </div>
+            <ReportsTable
+              status="completedform"
+              data={forms}
+              onDelete={this.onDelete.bind(this)}
+              sortBy={this.sortFunction.bind(this)}
+              direction={direction}
+            />
             {isFound === "no" &&
               <h4 className="title text-center">No completed reports.</h4>}
             {isFound === "yes" &&

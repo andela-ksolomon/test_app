@@ -125,7 +125,7 @@ class Tests extends React.Component {
                       className="content"
                       style={{
                         maxHeight: 790,
-                        minHeight: 300,
+                        minHeight: 645,
                         overflow: "scroll"
                       }}
                     >

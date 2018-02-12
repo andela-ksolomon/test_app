@@ -127,13 +127,13 @@ class App extends React.Component {
  * @memberof App
  */
   getUserTests(forms) {
-    const tests = [];
+    let tests = [];
     for (let patientId in forms) {
       if (forms.hasOwnProperty(patientId)) {
-        const form = forms[patientId].tests;
-        for (let testCategory in form) {
-          if (form.hasOwnProperty(testCategory)) {
-            tests.push(form[testCategory]);
+        const formTests = forms[patientId].tests;
+        for (let testCategory in formTests) {
+          if (formTests.hasOwnProperty(testCategory)) {
+            tests = [...tests, ...Object.values(formTests[testCategory])];
           }
         }
       }
@@ -153,9 +153,8 @@ class App extends React.Component {
       .subtract(1, "days")
       .format("YYYY-MM-DD");
     let endDate = moment().endOf("month").add(1, "days").format("YYYY-MM-DD");
-    let currentMonthTests = userTests.filter(tests => {
-      let test = Object.values(tests)[0];
-      return moment(test.date, "YYYY-M-D").isBetween(startDate, endDate);
+    let currentMonthTests = userTests.filter(test => {
+      return moment(test.date, "YYYY-MM-D").isBetween(startDate, endDate);
     });
     return currentMonthTests;
   }

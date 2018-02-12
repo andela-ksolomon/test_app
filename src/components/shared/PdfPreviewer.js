@@ -65,7 +65,6 @@ class PdfPreviewer extends React.Component {
       const height = pdf.internal.pageSize.height;
       pdf.addImage(imgData, "PNG", 20, 10, width, height);
       pdf.save(`${test.id}_${test.category}.pdf`);
-      console.log("done");
       this.setState({
         loading: "done"
       });

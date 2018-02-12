@@ -4,7 +4,8 @@ import moment from "moment";
 import DayPickerInput from "react-day-picker/DayPickerInput";
 import "react-day-picker/lib/style.css";
 import QuizComponent from "./QuizComponent";
-import $ from 'jquery';
+import { formatDate, parseDate } from "react-day-picker/moment";
+import $ from "jquery";
 // import { connect } from 'react-redux';
 // import { Link } from 'react-router';
 
@@ -76,7 +77,7 @@ class CreateTest extends React.Component {
           time: testData.time,
           comment: testData.comment,
           selectedCategory: testData.category,
-          date: moment(testData.date, "YYYY-M-D").format("YYYY-M-D"),
+          date: moment(testData.date, "YYYY-MM-DD").format("YYYY-MM-DD"),
           successMessage: "",
           selectedTest: nextProps.selectedTest,
           allQuestions: testData.questions
@@ -87,7 +88,7 @@ class CreateTest extends React.Component {
             title: "",
             time: "",
             comment: "",
-            date: moment().format("YYYY-M-D"),
+            date: moment().format("YYYY-MM-DD"),
             selectedCategory: nextProps.selectedCategory,
             successMessage: "",
             selectedTest: nextProps.selectedTest,
@@ -99,7 +100,7 @@ class CreateTest extends React.Component {
       this.setState({
         title: "",
         time: "",
-        date: moment().format("YYYY-M-D"),
+        date: moment().format("YYYY-MM-DD"),
         comment: "",
         successMessage: "",
         selectedCategory: nextProps.selectedCategory,
@@ -166,7 +167,7 @@ class CreateTest extends React.Component {
         .update(updates)
         .then(() => {
           this.props.resetValue(testkey, this.state.selectedCategory);
-          $('#videoModal').scrollTop(0);
+          $("#videoModal").scrollTop(0);
           this.setState(
             {
               successMessage: "Test was saved sucessfully"
@@ -181,13 +182,13 @@ class CreateTest extends React.Component {
         })
         .catch(error => {
           this.setState({ error: error.message });
-          $('#videoModal').scrollTop(0);
+          $("#videoModal").scrollTop(0);
         });
     } else {
       this.setState({
         error
       });
-      $('#videoModal').scrollTop(0);
+      $("#videoModal").scrollTop(0);
     }
   }
 
@@ -250,7 +251,7 @@ class CreateTest extends React.Component {
 
   onDayChange = day => {
     var change = {};
-    change["date"] = moment(day).format("YYYY-M-D");
+    change["date"] = moment(day).format("YYYY-MM-DD");
     this.setState(change);
   };
 
@@ -318,6 +319,9 @@ class CreateTest extends React.Component {
                       <label htmlFor="date">Select date:</label>
                       <DayPickerInput
                         value={this.state.date}
+                        formatDate={formatDate}
+                        format="YYYY-MM-DD"
+                        parseDate={parseDate}
                         todayButton="Select Today's Date"
                         onDayChange={this.onDayChange}
                       />
