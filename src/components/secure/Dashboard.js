@@ -53,7 +53,8 @@ class Dashboard extends React.Component {
       }
     } else {
       this.setState({
-        isFound: "no"
+        isFound: "no",
+        forms: []
       });
     }
   }

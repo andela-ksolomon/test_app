@@ -56,7 +56,8 @@ class ViewRecords extends React.Component {
         });
       } else {
         this.setState({
-          isFound: "no"
+          isFound: "no",
+          forms: []
         });
       }
     } else {
@@ -184,13 +185,6 @@ class ViewRecords extends React.Component {
             <div className="header">
               <h4 className="title">Completed Reports</h4>
               <p className="category">Lists of Reports that are completed</p>
-              {/*  <Link className="pull-right" to="/createform">
-                <button className="col-xs-offset-1 btn-fill btn btn-success">
-                  <span className="glyphicon btn-glyphicon glyphicon-plus img-circle text-success" />
-                  Create a New Report
-                </button>
-              </Link> 
-            */}
             </div>
             <ReportsTable
               status="completedform"
